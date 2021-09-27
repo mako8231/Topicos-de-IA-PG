@@ -15,7 +15,7 @@
 
     arvoregenes criaArvore(char chave);
     void insiraNodo(arvoregenes nodo, char chave);
-    void apagaNodo(arvoregenes nodo);
+    void apagaNodo(arvoregenes *nodo);
     void prefixa(arvoregenes nodo);
     
 #endif
