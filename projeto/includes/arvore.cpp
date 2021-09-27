@@ -1,6 +1,9 @@
 #include "arvore.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 arvoregenes criaArvore(char chave){
     arvoregenes arv;
@@ -12,6 +15,13 @@ arvoregenes criaArvore(char chave){
     return arv;
 }
 
+void prefixa(arvoregenes nodo){
+    if (nodo != NULL){
+        cout << nodo->chave << " ";
+        prefixa(nodo->filhoesquerdo);
+        prefixa(nodo->filhodireito);
+    }
+}
 
 void insiraNodo(arvoregenes nodo, char chave){
     arvoregenes filho; 
