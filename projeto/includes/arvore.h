@@ -13,9 +13,8 @@
 
     typedef nodo *arvoregenes;
 
-    arvoregenes criaArvore();
-    void insiraNodo(arvoregenes nodo);
+    arvoregenes criaArvore(char chave);
+    void insiraNodo(arvoregenes nodo, char chave);
     void apagaNodo(arvoregenes nodo);
-
     
 #endif
