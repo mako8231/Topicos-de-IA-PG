@@ -17,12 +17,30 @@ arvoregenes criaArvore(char chave){
     return arv;
 }
 
-void prefixa(arvoregenes nodo){
+void preordem(arvoregenes nodo){
     //ordem de exibição: (R, E, D)
     if (nodo != NULL){
         cout << nodo->chave << " ";
-        prefixa(nodo->filhoesquerdo);
-        prefixa(nodo->filhodireito);
+        preordem(nodo->filhoesquerdo);
+        preordem(nodo->filhodireito);
+    }
+}
+
+void ordem(arvoregenes nodo){
+    //ordem de exibição: (E, R, D)
+    if (nodo != NULL){
+        ordem(nodo->filhoesquerdo);
+        cout << nodo->chave << " ";
+        ordem(nodo->filhodireito);
+    }
+}
+
+void posordem(arvoregenes nodo){
+    //ordem de exibição: (E, D, R)
+    if (nodo != NULL){
+        posordem(nodo->filhoesquerdo);
+        posordem(nodo->filhodireito);
+        cout << nodo->chave << " ";
     }
 }
 
