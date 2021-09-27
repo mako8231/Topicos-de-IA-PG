@@ -5,9 +5,9 @@
 
 using namespace std;
 int main(){
-	arvoregenes teste = criaArvore('4');
-	insiraNodo(teste, '6');
-	insiraNodo(teste, '2');
+	arvoregenes teste = criaArvore('+');
+	insiraNodo(teste, '-');
+	insiraNodo(teste, '*');
 	insiraNodo(teste->filhoesquerdo, '3');
 	insiraNodo(teste->filhoesquerdo, '1');
 	insiraNodo(teste->filhodireito, '7');
