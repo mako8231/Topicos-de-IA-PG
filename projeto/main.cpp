@@ -5,14 +5,20 @@
 
 using namespace std;
 int main(){
-	arvoregenes teste = criaArvore('+');
-	insiraNodo(teste, '-');
-	insiraNodo(teste, '*');
-	insiraNodo(teste->filhoesquerdo, '3');
-	insiraNodo(teste->filhoesquerdo, '1');
-	insiraNodo(teste->filhodireito, '7');
-	insiraNodo(teste->filhodireito, '5');
-	
+
+	arvoregenes teste = criaArvore("+");
+	insiraNodo(teste, "-");
+	insiraNodo(teste, "*");
+	insiraNodo(teste->filhoesquerdo, "3");
+	insiraNodo(teste->filhoesquerdo, "1");
+	insiraNodo(teste->filhodireito, "7");
+	insiraNodo(teste->filhodireito, "5");
+
+	posordem(teste);
+	cout << "\n";
+	ordem(teste);
+	cout << "\n";
+	preordem(teste);
 
 	//printf("%c\n",teste->chave);
 	//comentário 

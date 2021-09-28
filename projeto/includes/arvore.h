@@ -11,13 +11,13 @@ using namespace std;
         nodo *pai;
         nodo *filhodireito;
         nodo *filhoesquerdo;  
-        char chave;  
+        char *chave;  
     };
 
     typedef nodo *arvoregenes;
 
-    arvoregenes criaArvore(char chave);
-    void insiraNodo(arvoregenes nodo, char chave);
+    arvoregenes criaArvore(const char *chave);
+    void insiraNodo(arvoregenes nodo, const char *chave);
     void apagaNodo(arvoregenes *nodo);
     void preordem(arvoregenes nodo);
     void posordem(arvoregenes nodo);

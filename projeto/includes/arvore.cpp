@@ -2,25 +2,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
-arvoregenes criaArvore(char chave){
+arvoregenes criaArvore(const char *chave){
     arvoregenes arv;
     //Aloca a árvore na memória 
     arv = (arvoregenes) malloc(sizeof(nodo));
     //não faça o nodo apontar para nada, por agora
     arv->pai = NULL;
     arv->filhodireito = NULL;
-    arv->filhoesquerdo = NULL; 
-    arv->chave = chave; 
+    arv->filhoesquerdo = NULL;
+    arv->chave = (char *) malloc(strlen(chave)+1);
+    strcpy(arv->chave, chave);
+    //arv->chave = chave; 
     return arv;
 }
 
 void preordem(arvoregenes nodo){
     //ordem de exibição: (R, E, D)
     if (nodo != NULL){
-        cout << nodo->chave << " ";
+        printf("%s ", nodo->chave);
         preordem(nodo->filhoesquerdo);
         preordem(nodo->filhodireito);
     }
@@ -30,7 +33,7 @@ void ordem(arvoregenes nodo){
     //ordem de exibição: (E, R, D)
     if (nodo != NULL){
         ordem(nodo->filhoesquerdo);
-        cout << nodo->chave << " ";
+        printf("%s ", nodo->chave);
         ordem(nodo->filhodireito);
     }
 }
@@ -40,11 +43,11 @@ void posordem(arvoregenes nodo){
     if (nodo != NULL){
         posordem(nodo->filhoesquerdo);
         posordem(nodo->filhodireito);
-        cout << nodo->chave << " ";
+        printf("%s ", nodo->chave);
     }
 }
 
-void insiraNodo(arvoregenes nodo, char chave){
+void insiraNodo(arvoregenes nodo, const char *chave){
     arvoregenes filho; 
     filho = criaArvore(chave);
     //preenche uma das entradas de nó, caso já estejam cheios, simplismente pare a execução e delete o nodo
