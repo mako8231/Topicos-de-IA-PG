@@ -1,5 +1,4 @@
 #include "funcoes.h"
-#include "stack.h"
 #include <stdlib.h>
 #include <iostream>
 
@@ -41,24 +40,6 @@ float Funcoes::resto(float x1, float x2){
 }
 
 void Funcoes::lerPrograma(arvoregenes programa){
-    //carregar o programa na stack
-    Stack pc; //contador de programa, basicamente a stack que vai guardar as expressões
-    Stack memoria; 
-    empilharexpressao(programa, &pc);
-
-    //estrutura de repetição para ler o programa:
-    for (int i=0; i<pc.tam; i++){
-        //aqui vai ter uma implementação real assim que eu reformular a árvore
-        cout << "oi.";
-    }
+  
 }
 
-
-void empilharexpressao(arvoregenes programa, Stack *pilha){
-    //exibição em pos ordem  
-    if (programa != NULL){
-        empilharexpressao(programa->filhoesquerdo, pilha);
-        pilha->empilhar(programa->chave);
-        empilharexpressao(programa->filhodireito, pilha);
-    }
-}
