@@ -1,12 +1,11 @@
 #include "includes/arvore.h"
 #include <stdio.h>
-#include <string>
 #include <iostream>
 
 using namespace std;
 int main(){
 
-	arvoregenes teste = criaArvore("+");
+	arvoregenes teste = criaArvore("sin");
 	insiraNodo(teste, "-");
 	insiraNodo(teste, "*");
 	insiraNodo(teste->filhoesquerdo, "3");

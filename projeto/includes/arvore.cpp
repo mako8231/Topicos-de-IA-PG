@@ -14,9 +14,9 @@ arvoregenes criaArvore(const char *chave){
     arv->pai = NULL;
     arv->filhodireito = NULL;
     arv->filhoesquerdo = NULL;
+    //arv->chave = chave; 
     arv->chave = (char *) malloc(strlen(chave)+1);
     strcpy(arv->chave, chave);
-    //arv->chave = chave; 
     return arv;
 }
 
