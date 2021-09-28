@@ -21,7 +21,7 @@ void Stack::empilhar(char val){
 
 //escreva os valores na stack
 void Stack::printar(){
-    for(int i = 0; i<= tam; i++){
+    for(int i = 0; i< tam; i++){
         cout << stack[i];
     }
 }
@@ -29,7 +29,7 @@ void Stack::printar(){
 //remove um valor do topo da stack
 void Stack::desempilhar(){
     if (tam > 0){
-        stack[tam - 1] = NULL; 
+        stack[tam - 1] = ' '; 
         tam -= 1; 
     } else {
         cout << "Stack já está vazio";

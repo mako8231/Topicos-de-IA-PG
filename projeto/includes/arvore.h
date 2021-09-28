@@ -1,5 +1,8 @@
 #ifndef ARVORE 
 #define ARVORE 
+
+#include <string>
+using namespace std;
     /**Por enquanto, acredito que uma árvore binária dê conta da situação
      * caso contrário, outros tipos de arvores podem ser testados 
      **/

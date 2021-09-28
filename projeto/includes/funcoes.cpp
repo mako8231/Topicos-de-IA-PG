@@ -1,9 +1,19 @@
 #include "funcoes.h"
 #include "stack.h"
 #include <stdlib.h>
+#include <iostream>
 
-//Pilha responsável por guardar a expressão do programa
-Stack pilha;
+using namespace std; 
+
+
+//construtor
+Funcoes::~Funcoes(){}
+
+Funcoes::Funcoes(){
+    x = 0;
+    y = 0; 
+}
+
 
 //operação de soma 
 float Funcoes::soma(float x1, float x2){
@@ -31,14 +41,24 @@ float Funcoes::resto(float x1, float x2){
 }
 
 void Funcoes::lerPrograma(arvoregenes programa){
+    //carregar o programa na stack
+    Stack pc; //contador de programa, basicamente a stack que vai guardar as expressões
+    Stack memoria; 
+    empilharexpressao(programa, &pc);
 
+    //estrutura de repetição para ler o programa:
+    for (int i=0; i<pc.tam; i++){
+        //aqui vai ter uma implementação real assim que eu reformular a árvore
+        cout << "oi.";
+    }
 }
 
-void empilharexpressao(arvoregenes programa){
+
+void empilharexpressao(arvoregenes programa, Stack *pilha){
     //exibição em pos ordem  
     if (programa != NULL){
-        empilharexpressao(programa->filhoesquerdo);
-        pilha.empilhar(programa->chave);
-        empilharexpressao(programa->filhodireito);
+        empilharexpressao(programa->filhoesquerdo, pilha);
+        pilha->empilhar(programa->chave);
+        empilharexpressao(programa->filhodireito, pilha);
     }
 }

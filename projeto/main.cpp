@@ -1,5 +1,4 @@
 #include "includes/arvore.h"
-#include "includes/stack.h"
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -14,12 +13,6 @@ int main(){
 	insiraNodo(teste->filhodireito, '7');
 	insiraNodo(teste->filhodireito, '5');
 	
-
-	preordem(teste);
-	cout << "\n";
-	ordem(teste);
-	cout << "\n";
-	posordem(teste);
 
 	//printf("%c\n",teste->chave);
 	//comentário 
