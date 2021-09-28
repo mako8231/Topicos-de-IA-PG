@@ -10,6 +10,8 @@ class Stack{
 
         void empilhar(char val);
         void desempilhar();
+        void printar();
+        int tamanho();
         Stack();
         ~Stack();
 };

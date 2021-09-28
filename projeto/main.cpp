@@ -1,4 +1,5 @@
 #include "includes/arvore.h"
+#include "includes/stack.h"
 #include <stdio.h>
 #include <string>
 #include <iostream>
