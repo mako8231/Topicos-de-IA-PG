@@ -31,6 +31,9 @@
             bool maiorique(float x1, float x2);
             bool AND(bool x1, bool x2);
             bool OR(bool x1, bool x2);
+
+            //interpretador 
+            float eval(arvoregenes programa);
             
             //construtor 
             Funcoes();
