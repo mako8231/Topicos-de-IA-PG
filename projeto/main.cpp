@@ -1,8 +1,15 @@
 #include "includes/arvore.h"
 #include <stdio.h>
 #include <iostream>
+#include <vector>
+#include "includes/funcoes.h"
 
 using namespace std;
+
+void empilharPrograma(arvoregenes programa, vector<char*> pilha){
+	
+}
+
 int main(){
 
 	arvoregenes teste = criaArvore("sin");

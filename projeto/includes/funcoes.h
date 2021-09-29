@@ -3,14 +3,23 @@
 
 #include "arvore.h"
 
-    const char listaFunc[] = {'*', '/', '+', '-', '%'};
-    const char listaTerm[] = {'x', 'y', '1','2','3','4','5','6','7','8','9','0'};
+    const char funcset[9][4] = {
+        "+", 
+        "-",
+        "/",
+        "*",
+        ">=",
+        "<=",
+        "MOD",
+        "OR",
+        "AND"
+    };
 
     class Funcoes{
         public:
             //terminais
-            float x; //isso pode ser a largura 
-            float y; //e essa variavel a demanda dos itens 
+            float l; //isso pode ser a largura 
+            float d; //e essa variavel a demanda dos itens 
 
             //funcoes
             float soma(float x1, float x2);
@@ -18,10 +27,11 @@
             float multiplicacao(float x1, float x2);
             float divisao(float x1, float x2);
             float resto(float x1, float x2);
-
-            //interpretador 
-            void lerPrograma(arvoregenes programa);
-
+            bool menorique(float x1, float x2);
+            bool maiorique(float x1, float x2);
+            bool AND(bool x1, bool x2);
+            bool OR(bool x1, bool x2);
+            
             //construtor 
             Funcoes();
             ~Funcoes();

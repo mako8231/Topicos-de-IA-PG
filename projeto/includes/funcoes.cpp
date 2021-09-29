@@ -1,6 +1,7 @@
 #include "funcoes.h"
 #include <stdlib.h>
 #include <iostream>
+#include <stdbool.h>
 
 using namespace std; 
 
@@ -9,8 +10,8 @@ using namespace std;
 Funcoes::~Funcoes(){}
 
 Funcoes::Funcoes(){
-    x = 0;
-    y = 0; 
+    l = 0;
+    d = 0; 
 }
 
 
@@ -39,7 +40,24 @@ float Funcoes::resto(float x1, float x2){
     return (int)x1 % (int)x2;
 }
 
-void Funcoes::lerPrograma(arvoregenes programa){
-  
+//verifica se x1 é menor que x2 
+bool Funcoes::menorique(float x1, float x2){
+    return x1 <= x2;
 }
+
+//verifica se x1 é maior que x2 
+bool Funcoes::maiorique(float x1, float x2){
+    return x1 >= x2;
+}
+
+//verifica se x1 E x2 é uma verdade  
+bool Funcoes::AND(bool x1, bool x2){
+    return x1 && x2;
+}
+
+//verifica se x1 OU x2 é uma verdade 
+bool Funcoes::OR(bool x1, bool x2){
+    return x1 || x2;
+}
+
 
