@@ -1,18 +1,16 @@
 #include "includes/arvore.h"
 #include <stdio.h>
 #include <iostream>
-#include <vector>
 #include "includes/funcoes.h"
 
 using namespace std;
 
-void empilharPrograma(arvoregenes programa, vector<char*> pilha){
-	
-}
+
+
 
 int main(){
 
-	arvoregenes teste = criaArvore("*");
+	arvoregenes teste = criaArvore(">=");
 	insiraNodo(teste, "-");
 	insiraNodo(teste, "*");
 	insiraNodo(teste->filhoesquerdo, "3");
@@ -28,8 +26,8 @@ int main(){
 	cout << "\n";
 
 	Funcoes f; 
-	float resultado = f.eval(teste);
-	cout << resultado; 
+	saida resultado = f.eval(teste);
+	cout << resultado.binario; 
 
 	//printf("%c\n",teste->chave);
 	//comentário 

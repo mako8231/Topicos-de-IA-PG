@@ -3,6 +3,13 @@
 
 #include "arvore.h"
 
+    //estrutura para processar a saída da leitura do programa
+    struct saida
+    {
+	    float numerico;
+	    bool binario; 
+    };
+
     const char funcset[9][4] = {
         "+", 
         "-",
@@ -33,7 +40,7 @@
             bool OR(bool x1, bool x2);
 
             //interpretador 
-            float eval(arvoregenes programa);
+            saida eval(arvoregenes programa);
             
             //construtor 
             Funcoes();

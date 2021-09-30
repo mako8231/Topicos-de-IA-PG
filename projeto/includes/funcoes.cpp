@@ -62,41 +62,55 @@ bool Funcoes::OR(bool x1, bool x2){
 }
 
 //Carrega e valida as expressões na árvore 
-float Funcoes::eval(arvoregenes programa){
+saida Funcoes::eval(arvoregenes programa){
+    saida s; 
+    s.binario = false; 
+    s.numerico = 0;
     //se for uma árvore vazia, apenas retorne zero
     if (!programa){
-        return 0; 
+        return s; 
     }
 
     //depois, verifica se os nós são folhas da árvore 
     //pois são as folhas da árvore que são os números, e variáveis, em outras palavras, terminais
     if (!programa->filhodireito && !programa->filhoesquerdo){
-        return atof(programa->chave);
+        s.numerico = atof(programa->chave);
     }
 
     //lendo a subárvore da esquerda 
-    float valor_e = eval(programa->filhoesquerdo);
+    saida valor_e = eval(programa->filhoesquerdo);
 
     //lendo a subárvore da direita 
-    float valor_d = eval(programa->filhodireito);
+    saida valor_d = eval(programa->filhodireito);
 
-    if (strcmp(programa->chave, "+") == 0){
-        return soma(valor_e, valor_d);
-    }
+    if (strcmp(programa->chave, "+") == 0)
+        s.numerico = (valor_e.numerico, valor_d.numerico);
+    
+    else if (strcmp(programa->chave, "-") == 0)
+        s.numerico = subtracao(valor_e.numerico, valor_d.numerico);
+    
+    else if (strcmp(programa->chave, "*") == 0)
+        s.numerico = multiplicacao(valor_e.numerico, valor_d.numerico);
 
-    if (strcmp(programa->chave, "-") == 0){
-        return subtracao(valor_e, valor_d);
-    }
+    else if (strcmp(programa->chave, "/") == 0)
+        s.numerico = divisao(valor_e.numerico, valor_d.numerico);
 
-    if (strcmp(programa->chave, "*") == 0){
-        return multiplicacao(valor_e, valor_d);
-    }
+    else if (strcmp(programa->chave, "MOD") == 0)
+        s.numerico = resto(valor_e.numerico, valor_d.numerico);
 
-    if (strcmp(programa->chave, "/") == 0){
-        return divisao(valor_e, valor_d);
-    }
+    else if (strcmp(programa->chave, ">=") == 0)
+        s.binario = maiorique(valor_e.numerico, valor_d.numerico);
 
-    return 0; 
+    else if (strcmp(programa->chave, "<=") == 0)
+        s.binario = menorique(valor_e.numerico, valor_d.numerico);
+
+    else if (strcmp(programa->chave, "AND") == 0)
+        s.binario = AND(valor_e.binario, valor_d.binario);
+    
+    else if (strcmp(programa->chave, "OR") == 0)
+        s.binario = OR(valor_e.binario, valor_d.binario);
+
+    return s; 
 
     /**por enquanto, apenas expressões aritiméticas, já penso numa solução  
      caso for lidar com mais de um tipo de dados, por exemplo, uma bool, uma solução interessante seria
