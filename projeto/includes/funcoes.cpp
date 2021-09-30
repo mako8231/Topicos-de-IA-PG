@@ -112,14 +112,13 @@ saida Funcoes::eval(arvoregenes programa){
 
     return s; 
 
-    /**por enquanto, apenas expressões aritiméticas, já penso numa solução  
-     caso for lidar com mais de um tipo de dados, por exemplo, uma bool, uma solução interessante seria
-     retornar uma struct que suporte esses dois tipos, por exemplo:
-
+    /**
+    É possível agora fazer essa função retornar dois valores consecutivos. 
+    Usando o registro Saída
+    
     saida registro:
         real numerico,
         logico binario
     fim_registro
-
      **/
 }
