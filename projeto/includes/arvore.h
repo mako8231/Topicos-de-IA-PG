@@ -16,8 +16,9 @@ using namespace std;
 
     typedef nodo *arvoregenes;
     //métodos 
-    arvoregenes criaArvore(const char *chave);
-    void insiraNodo(arvoregenes nodo, const char *chave);
+    arvoregenes criaArvore(char *chave);
+    arvoregenes copiaArvore(arvoregenes nodo);
+    void insiraNodo(arvoregenes *alvo, char *chave);
     void apagaNodo(arvoregenes *nodo);
     void preordem(arvoregenes nodo);
     void posordem(arvoregenes nodo);

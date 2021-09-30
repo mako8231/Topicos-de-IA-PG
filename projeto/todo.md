@@ -7,7 +7,7 @@
 
     3.1 - Na verdade, acredito que árvore binária tem plena capacidade de resolver o problema do corte. 
 
-4- Na stack, adaptar o vetor para a classe std::Vector, considerando que ele já lida com memória alocada dinamicamente e não tem necessidade de usar espaço desnecessário na memória. ✔️
+4- Na stack, adaptar o vetor para a classe std::Vector, considerando que ele já lida com memória alocada dinamicamente e não tem necessidade de usar espaço desnecessário na memória. (a struct stack foi deletada aliás, a ideia era usar a própria como interpretador mas dá pra fazer isso recursivamente sem a necessidade de usar outra estrutura de dados) ✔️
 
 5- Pensar em uma maneira de gerar uma população inicial. Que atenda as restrições do problema do corte unidimensional.
 

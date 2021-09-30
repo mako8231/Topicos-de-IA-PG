@@ -6,17 +6,15 @@
 using namespace std;
 
 
-
-
 int main(){
 
-	arvoregenes teste = criaArvore(">=");
-	insiraNodo(teste, "-");
-	insiraNodo(teste, "*");
-	insiraNodo(teste->filhoesquerdo, "3");
-	insiraNodo(teste->filhoesquerdo, "1");
-	insiraNodo(teste->filhodireito, "5");
-	insiraNodo(teste->filhodireito, "2");
+	arvoregenes teste = criaArvore("<=");
+	insiraNodo(&teste->filhoesquerdo, "-");
+	insiraNodo(&teste->filhodireito, "*");
+	//insiraNodo(teste->filhoesquerdo, &teste->filhoesquerdo->filhoesquerdo, "3");
+	//insiraNodo(teste->filhoesquerdo, &teste->filhoesquerdo->filhodireito, "1");
+	//insiraNodo(teste->filhodireito, &teste->filhodireito->filhoesquerdo, "5");
+	//insiraNodo(teste->filhodireito, &teste->filhodireito->filhodireito, "2");
 
 	posordem(teste);
 	cout << "\n";
@@ -27,7 +25,13 @@ int main(){
 
 	Funcoes f; 
 	saida resultado = f.eval(teste);
-	cout << resultado.binario; 
+	cout << resultado.binario;
+
+	cout << "\n";
+
+	arvoregenes copia;
+	copia = copiaArvore(teste);
+	ordem(copia);
 
 	//printf("%c\n",teste->chave);
 	//comentário 
