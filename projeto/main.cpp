@@ -8,13 +8,13 @@ using namespace std;
 
 int main(){
 
-	arvoregenes teste = criaArvore("<=");
+	arvoregenes teste = criaArvore("+");
 	insiraNodo(&teste->filhoesquerdo, "-");
 	insiraNodo(&teste->filhodireito, "*");
-	//insiraNodo(teste->filhoesquerdo, &teste->filhoesquerdo->filhoesquerdo, "3");
-	//insiraNodo(teste->filhoesquerdo, &teste->filhoesquerdo->filhodireito, "1");
-	//insiraNodo(teste->filhodireito, &teste->filhodireito->filhoesquerdo, "5");
-	//insiraNodo(teste->filhodireito, &teste->filhodireito->filhodireito, "2");
+	insiraNodo(&teste->filhoesquerdo->filhoesquerdo, "3");
+	insiraNodo(&teste->filhoesquerdo->filhodireito, "1");
+	insiraNodo(&teste->filhodireito->filhoesquerdo, "5");
+	insiraNodo(&teste->filhodireito->filhodireito, "d");
 
 	posordem(teste);
 	cout << "\n";
@@ -24,14 +24,15 @@ int main(){
 	cout << "\n";
 
 	Funcoes f; 
-	saida resultado = f.eval(teste);
-	cout << resultado.binario;
+	saida resultado = f.eval(teste, 3, 2);
+	cout << resultado.numerico;
 
 	cout << "\n";
 
 	arvoregenes copia;
 	copia = copiaArvore(teste);
 	ordem(copia);
+
 
 	//printf("%c\n",teste->chave);
 	//comentário 

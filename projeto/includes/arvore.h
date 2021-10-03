@@ -2,6 +2,8 @@
 #define ARVORE 
 
 #include <string>
+#include <vector>
+
 using namespace std;
     /**Por enquanto, acredito que uma árvore binária dê conta da situação
      * caso contrário, outros tipos de arvores podem ser testados 
@@ -23,5 +25,4 @@ using namespace std;
     void preordem(arvoregenes nodo);
     void posordem(arvoregenes nodo);
     void ordem(arvoregenes nodo);
-
 #endif

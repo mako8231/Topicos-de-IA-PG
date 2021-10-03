@@ -17,37 +17,37 @@ Funcoes::Funcoes(){
 
 
 //operação de soma 
-float Funcoes::soma(float x1, float x2){
+int Funcoes::soma(int x1, int x2){
     return x1 + x2;
 }
 
 //operação de subtração
-float Funcoes::subtracao(float x1, float x2){
+int Funcoes::subtracao(int x1, int x2){
     return x1 - x2;
 }
 
 //operação de multiplicação
-float Funcoes::multiplicacao(float x1, float x2){
+int Funcoes::multiplicacao(int x1, int x2){
     return x1 * x2;
 }
 
 //operação de divisão
-float Funcoes::divisao(float x1, float x2){
+int Funcoes::divisao(int x1, int x2){
     return x1/x2;
 }
 
 //operação de resto
-float Funcoes::resto(float x1, float x2){
-    return (int)x1 % (int)x2;
+int Funcoes::resto(int x1, int x2){
+    return x1 % x2;
 }
 
 //verifica se x1 é menor que x2 
-bool Funcoes::menorique(float x1, float x2){
+bool Funcoes::menorique(int x1, int x2){
     return x1 <= x2;
 }
 
 //verifica se x1 é maior que x2 
-bool Funcoes::maiorique(float x1, float x2){
+bool Funcoes::maiorique(int x1, int x2){
     return x1 >= x2;
 }
 
@@ -62,7 +62,7 @@ bool Funcoes::OR(bool x1, bool x2){
 }
 
 //Carrega e valida as expressões na árvore 
-saida Funcoes::eval(arvoregenes programa){
+saida Funcoes::eval(arvoregenes programa, int l, int d){
     saida s; 
     s.binario = false; 
     s.numerico = 0;
@@ -74,17 +74,23 @@ saida Funcoes::eval(arvoregenes programa){
     //depois, verifica se os nós são folhas da árvore 
     //pois são as folhas da árvore que são os números, e variáveis, em outras palavras, terminais
     if (!programa->filhodireito && !programa->filhoesquerdo){
-        s.numerico = atof(programa->chave);
+        if (strcmp(programa->chave, "l") == 0){
+            s.numerico = l;
+        } else if(strcmp(programa->chave, "d") == 0){
+            s.numerico = d;
+        } else {
+            s.numerico = atoi(programa->chave);
+        }
     }
 
     //lendo a subárvore da esquerda 
-    saida valor_e = eval(programa->filhoesquerdo);
+    saida valor_e = eval(programa->filhoesquerdo, l, d);
 
     //lendo a subárvore da direita 
-    saida valor_d = eval(programa->filhodireito);
+    saida valor_d = eval(programa->filhodireito, l, d);
 
     if (strcmp(programa->chave, "+") == 0)
-        s.numerico = (valor_e.numerico, valor_d.numerico);
+        s.numerico = soma(valor_e.numerico, valor_d.numerico);
     
     else if (strcmp(programa->chave, "-") == 0)
         s.numerico = subtracao(valor_e.numerico, valor_d.numerico);

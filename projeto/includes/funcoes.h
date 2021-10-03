@@ -6,7 +6,7 @@
     //estrutura para processar a saída da leitura do programa
     struct saida
     {
-	    float numerico;
+	    int numerico;
 	    bool binario; 
     };
 
@@ -25,22 +25,22 @@
     class Funcoes{
         public:
             //terminais
-            float l; //isso pode ser a largura 
-            float d; //e essa variavel a demanda dos itens 
+            int l; //isso pode ser a largura 
+            int d; //e essa variavel a demanda dos itens 
 
             //funcoes
-            float soma(float x1, float x2);
-            float subtracao(float x1, float x2);
-            float multiplicacao(float x1, float x2);
-            float divisao(float x1, float x2);
-            float resto(float x1, float x2);
-            bool menorique(float x1, float x2);
-            bool maiorique(float x1, float x2);
+            int soma(int x1, int x2);
+            int subtracao(int x1, int x2);
+            int multiplicacao(int x1, int x2);
+            int divisao(int x1, int x2);
+            int resto(int x1, int x2);
+            bool menorique(int x1, int x2);
+            bool maiorique(int x1, int x2);
             bool AND(bool x1, bool x2);
             bool OR(bool x1, bool x2);
 
             //interpretador 
-            saida eval(arvoregenes programa);
+            saida eval(arvoregenes programa, int l, int d);
             
             //construtor 
             Funcoes();

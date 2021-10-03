@@ -77,6 +77,7 @@ void insiraNodo(arvoregenes *alvo,  char *chave){
     }
 }
 
+
 //garbage collector 
 void apagaNodo(arvoregenes *nodo){
     if (*nodo != NULL){
