@@ -20,9 +20,13 @@ using namespace std;
     //métodos 
     arvoregenes criaArvore(char *chave);
     arvoregenes copiaArvore(arvoregenes nodo);
+    int geraNum(int max);
     void insiraNodo(arvoregenes *alvo, char *chave);
     void apagaNodo(arvoregenes *nodo);
     void preordem(arvoregenes nodo);
     void posordem(arvoregenes nodo);
     void ordem(arvoregenes nodo);
+    //geração da população 
+     
+    arvoregenes gerarPopulacao(int nivel);
 #endif

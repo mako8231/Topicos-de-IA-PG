@@ -3,6 +3,8 @@
 #include <iostream>
 #include "includes/funcoes.h"
 
+#include <time.h>
+
 using namespace std;
 
 
@@ -15,6 +17,9 @@ int main(){
 	insiraNodo(&teste->filhoesquerdo->filhodireito, "1");
 	insiraNodo(&teste->filhodireito->filhoesquerdo, "5");
 	insiraNodo(&teste->filhodireito->filhodireito, "d");
+
+	for (int n =0; n <= 40; n ++)
+		cout << funcset[geraNum(9)] << " ";
 
 	posordem(teste);
 	cout << "\n";

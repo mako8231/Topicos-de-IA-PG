@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
+#include <random>
 
 using namespace std;
 
@@ -86,6 +87,28 @@ void apagaNodo(arvoregenes *nodo){
         //libera a memória 
         free(*nodo);
         *nodo = NULL; 
+    }
+}
+
+int geraNum(int max){
+    std::random_device rd; // obtém um numero aleatorio pelo hardware 
+    std::mt19937 gen(rd()); // semea o gerador 
+    std::uniform_int_distribution<> distr(0, max); // define o alcance 
+
+    return distr(gen);  // gera os números e retorna :) 
+}
+
+arvoregenes gerarPopulacao(int nivel){
+    int i = 0;
+    
+    
+    //inserção de subárvores (funções)
+    if (nivel < 3){
+
+    } 
+    //inserção de nós folhas (terminais)
+    else if (nivel == 3) {
+
     }
 }
 

@@ -10,6 +10,9 @@
 	    bool binario; 
     };
 
+#define FUNC_LINE 9 
+#define FUNC_ROW 4
+
     const char funcset[9][4] = {
         "+", 
         "-",
