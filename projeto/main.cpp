@@ -18,8 +18,6 @@ int main(){
 	insiraNodo(&teste->filhodireito->filhoesquerdo, "5");
 	insiraNodo(&teste->filhodireito->filhodireito, "d");
 
-	for (int n =0; n <= 40; n ++)
-		cout << funcset[geraNum(9)] << " ";
 
 	posordem(teste);
 	cout << "\n";
@@ -35,7 +33,7 @@ int main(){
 	cout << "\n";
 
 	arvoregenes copia;
-	copia = copiaArvore(teste);
+	copia = gerarPopulacao(1, copia);
 	ordem(copia);
 
 

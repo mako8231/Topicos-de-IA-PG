@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <random>
+#include "funcoes.h"
 
 using namespace std;
 
@@ -90,6 +91,7 @@ void apagaNodo(arvoregenes *nodo){
     }
 }
 
+//gera um número aleatório 
 int geraNum(int max){
     std::random_device rd; // obtém um numero aleatorio pelo hardware 
     std::mt19937 gen(rd()); // semea o gerador 
@@ -98,17 +100,29 @@ int geraNum(int max){
     return distr(gen);  // gera os números e retorna :) 
 }
 
-arvoregenes gerarPopulacao(int nivel){
-    int i = 0;
-    
-    
+arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
     //inserção de subárvores (funções)
-    if (nivel < 3){
-
+    if (nivel > 0){
+        //cria árvore 
+        individuo = criaArvore((char*)funcset[geraNum(FUNC_LINE - 1)]);
+        
+        //insere os filhos aleatoriamente 
+        individuo->filhoesquerdo = gerarPopulacao(nivel - 1, individuo->filhoesquerdo);
+        individuo->filhodireito = gerarPopulacao(nivel - 1, individuo->filhodireito);
+        return individuo; 
     } 
     //inserção de nós folhas (terminais)
-    else if (nivel == 3) {
+    else if (nivel == 0) {
+        //criar nodos a partir da lista de terminais 
+        individuo = criaArvore((char*)terminalset[geraNum(TERM_LINE - 1)]);
 
+        //insere as folhas
+        individuo->filhoesquerdo = gerarPopulacao(nivel - 1, individuo->filhoesquerdo);
+        individuo->filhodireito = gerarPopulacao(nivel - 1, individuo->filhodireito);
+
+        return individuo; 
     }
+
+    return individuo; 
 }
 

@@ -13,7 +13,9 @@
 #define FUNC_LINE 9 
 #define FUNC_ROW 4
 
-    const char funcset[9][4] = {
+#define TERM_LINE 2
+
+    const char funcset[FUNC_LINE][FUNC_ROW] = {
         "+", 
         "-",
         "/",
@@ -23,6 +25,11 @@
         "MOD",
         "OR",
         "AND"
+    };
+
+    const char terminalset[TERM_LINE][TERM_LINE] = {
+        "l",
+        "d"
     };
 
     class Funcoes{

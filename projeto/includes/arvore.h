@@ -28,5 +28,5 @@ using namespace std;
     void ordem(arvoregenes nodo);
     //geração da população 
      
-    arvoregenes gerarPopulacao(int nivel);
+    arvoregenes gerarPopulacao(int nivel, arvoregenes individuo);
 #endif
