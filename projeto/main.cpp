@@ -38,12 +38,14 @@ void fitness(){
 	
 }
 
-arvoregenes * populacaoInicial(int qnt, int maxlv){
-	//aloca o vetor da população inicial na memória 
-	arvoregenes *individuos = (arvoregenes*) malloc(sizeof(arvoregenes) * qnt);
+vector<arvoregenes> populacaoInicial(int qnt, int maxlv){
 	//insere as árvores randomicamente geradas de níveis aleatórios (que não passem da profundidade máxima)
+	vector<arvoregenes> individuos; 
 	for (int i = 0; i<qnt; i++){
-		individuos[i] = gerarPopulacao(geraNum(maxlv), individuos[i]);
+		//individuos[i] = gerarPopulacao(geraNum(maxlv), individuos[i]);
+		arvoregenes programa = gerarPopulacao(geraNum(maxlv), programa);
+		individuos.push_back(programa);
+
 	}
 
 	return individuos;
@@ -59,11 +61,14 @@ arvoregenes * populacaoInicial(int qnt, int maxlv){
  * peca
  * **/
 
-arvoregenes individuos[40]; 
-
 int main(){
 	int opt;
 	bool on = true; 
+	//variáveis de entrada
+	int niveis, quantidade;
+	Funcoes f;
+	
+	vector<arvoregenes> programas; 
 
 	while (on)
 	{
@@ -73,16 +78,36 @@ int main(){
 		cout << "3- Treinar População (irá gerar uma nova geração)\n";
 		cout << "4- Sair\n";
 
+		cout << "======================================================\n";
+
+		cout << "Programas gerados: " << programas.size();
+
 		cin >> opt;
 
 		switch (opt)
 		{
 		case 1:
 			cout << "\nGerando população inicial...\n";
+			cout << "\nInsira o número máximo de níveis\n";
+			cin >> niveis;
+			cout << "\nA quantidade\n";
+			cin >> quantidade;
+			if (niveis > 0 && quantidade > 0) {
+				programas = populacaoInicial(quantidade, niveis);
+				cout << "\nforam criados: " << programas.size();
+			} else {
+				cout << "\nEntrada inválida\n";
+			}
 			break;
 		
 		case 2:
-			cout << "\nListando cada saída do problema da população\n";
+			cout << "\nListando cada saída da população\n";
+			if (programas.size() > 0) {
+				for (int i = 0; i<programas.size(); i++){
+					ordem(programas[i]);
+					cout << "\n";
+				}
+			}
 			break;
 		
 		case 3:
