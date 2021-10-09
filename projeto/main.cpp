@@ -7,37 +7,56 @@
 
 using namespace std;
 
+struct demanda
+{
+	int largura;
+	int quantidade;
+}; 
+
+struct peca
+{
+	int largura; 
+	int estoque; 
+};
+
+void crossover(){
+
+}
+
+void fitness(){
+
+}
+
+arvoregenes * populacaoInicial(int qnt, int maxlv){
+	//aloca o vetor da população inicial na memória 
+	arvoregenes *individuos = (arvoregenes*) malloc(sizeof(arvoregenes) * qnt);
+	//insere as árvores randomicamente geradas de níveis aleatórios (que não passem da profundidade máxima)
+	for (int i = 0; i<qnt; i++){
+		individuos[i] = gerarPopulacao(geraNum(maxlv), individuos[i]);
+	}
+
+	return individuos;
+}
+
+
+
+/** Entradas do problema do corte 
+ * estoque_max 
+ * largura_da_preça
+ * desperdicio[i] sendo i = uma programação de corte diferente
+ * demanda[i] 
+ * peca
+ * **/
+
+arvoregenes individuos[40]; 
 
 int main(){
-
-	arvoregenes teste = criaArvore("+");
-	insiraNodo(&teste->filhoesquerdo, "-");
-	insiraNodo(&teste->filhodireito, "*");
-	insiraNodo(&teste->filhoesquerdo->filhoesquerdo, "3");
-	insiraNodo(&teste->filhoesquerdo->filhodireito, "1");
-	insiraNodo(&teste->filhodireito->filhoesquerdo, "5");
-	insiraNodo(&teste->filhodireito->filhodireito, "d");
-
-
-	posordem(teste);
-	cout << "\n";
-	ordem(teste);
-	cout << "\n";
-	preordem(teste);
-	cout << "\n";
-
+	saida out; 
 	Funcoes f; 
-	saida resultado = f.eval(teste, 3, 2);
-	cout << resultado.numerico;
-
+	
+	arvoregenes * teste; 
+	teste = populacaoInicial(7, 3);
 	cout << "\n";
 
-	arvoregenes copia;
-	copia = gerarPopulacao(1, copia);
-	ordem(copia);
-
-
-	//printf("%c\n",teste->chave);
-	//comentário 
 	return 0;
 }

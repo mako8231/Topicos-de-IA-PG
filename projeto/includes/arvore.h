@@ -7,6 +7,10 @@
 using namespace std;
     /**Por enquanto, acredito que uma árvore binária dê conta da situação
      * caso contrário, outros tipos de arvores podem ser testados 
+     * 
+     * condição da satisfação da demanda:
+     * Somatorio(programacao[i] * cortes[i]) <= demanda + estmax
+     * 
      **/
     struct nodo
     {

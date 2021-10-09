@@ -17,37 +17,41 @@ Funcoes::Funcoes(){
 
 
 //operação de soma 
-int Funcoes::soma(int x1, int x2){
+float Funcoes::soma(float x1, float x2){
     return x1 + x2;
 }
 
 //operação de subtração
-int Funcoes::subtracao(int x1, int x2){
+float Funcoes::subtracao(float x1, float x2){
     return x1 - x2;
 }
 
 //operação de multiplicação
-int Funcoes::multiplicacao(int x1, int x2){
+float Funcoes::multiplicacao(float x1, float x2){
     return x1 * x2;
 }
 
 //operação de divisão
-int Funcoes::divisao(int x1, int x2){
+float Funcoes::divisao(float x1, float x2){
+    if (x2 == 0)
+        return x1;
     return x1/x2;
 }
 
 //operação de resto
-int Funcoes::resto(int x1, int x2){
-    return x1 % x2;
+float Funcoes::resto(float x1, float x2){
+    if (x2 == 0)
+        return x1;
+    return (int)x1%(int)x2;
 }
 
 //verifica se x1 é menor que x2 
-bool Funcoes::menorique(int x1, int x2){
+bool Funcoes::menorique(float x1, float x2){
     return x1 <= x2;
 }
 
 //verifica se x1 é maior que x2 
-bool Funcoes::maiorique(int x1, int x2){
+bool Funcoes::maiorique(float x1, float x2){
     return x1 >= x2;
 }
 
@@ -62,7 +66,7 @@ bool Funcoes::OR(bool x1, bool x2){
 }
 
 //Carrega e valida as expressões na árvore 
-saida Funcoes::eval(arvoregenes programa, int l, int d){
+saida Funcoes::eval(arvoregenes programa, float l, float d){
     saida s; 
     s.binario = false; 
     s.numerico = 0;
