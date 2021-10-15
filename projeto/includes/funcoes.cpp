@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdbool.h>
 #include <string.h>
+#include <random>
 
 using namespace std; 
 
@@ -131,4 +132,20 @@ saida Funcoes::eval(arvoregenes programa, float l, float d){
         logico binario
     fim_registro
      **/
+}
+
+//gera um número aleatório 
+int geraNum(int max){
+    std::random_device rd; // obtém um numero aleatorio pelo hardware 
+    std::mt19937 gen(rd()); // semea o gerador 
+    std::uniform_int_distribution<> distr(0, max); // define o alcance 
+
+    return distr(gen);  // gera os números e retorna :) 
+}
+
+float randomFloat(float max){
+	std::random_device rd; 
+	std::default_random_engine eng(rd());
+	std::uniform_real_distribution<> distr(0, max);
+	return distr(eng);
 }

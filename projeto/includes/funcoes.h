@@ -11,11 +11,11 @@
     };
 
 #define FUNC_LINE 4 
-#define FUNC_ROW 4
+#define FUNC_COL 4
 
 #define TERM_LINE 2
 
-    const char funcset[FUNC_LINE][FUNC_ROW] = {
+    const char funcset[FUNC_LINE][FUNC_COL] = {
         "+", 
         "-",
         "/",
@@ -29,7 +29,7 @@
 
     const char terminalset[TERM_LINE][TERM_LINE] = {
         "l",
-        "d"
+        "d",
     };
 
     class Funcoes{
@@ -56,5 +56,8 @@
             Funcoes();
             ~Funcoes();
 };
+
+int geraNum(int max);
+float randomFloat(float max);
 
 #endif

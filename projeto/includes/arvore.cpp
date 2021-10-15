@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
-#include <random>
 #include "funcoes.h"
 
 using namespace std;
@@ -91,31 +90,32 @@ void apagaNodo(arvoregenes *nodo){
     }
 }
 
-//gera um número aleatório 
-int geraNum(int max){
-    std::random_device rd; // obtém um numero aleatorio pelo hardware 
-    std::mt19937 gen(rd()); // semea o gerador 
-    std::uniform_int_distribution<> distr(0, max); // define o alcance 
-
-    return distr(gen);  // gera os números e retorna :) 
-}
-
 arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
     //inserção de subárvores (funções)
     if (nivel > 0){
+        int n_nivel = nivel -1;
         //cria árvore 
         individuo = criaArvore((char*)funcset[geraNum(FUNC_LINE - 1)]);
         
         //insere os filhos aleatoriamente 
-        individuo->filhoesquerdo = gerarPopulacao(nivel - 1, individuo->filhoesquerdo);
-        individuo->filhodireito = gerarPopulacao(nivel - 1, individuo->filhodireito);
+        individuo->filhoesquerdo = gerarPopulacao(geraNum(n_nivel), individuo->filhoesquerdo);
+        individuo->filhodireito = gerarPopulacao(geraNum(n_nivel), individuo->filhodireito);
         return individuo; 
     } 
     //inserção de nós folhas (terminais)
     else if (nivel == 0) {
         //criar nodos a partir da lista de terminais 
-        individuo = criaArvore((char*)terminalset[geraNum(TERM_LINE - 1)]);
+        //criar uma probabilidade de entrar uma variável constante aleatória ou uma variável do conjunto de terminais 
+        if (geraNum(2) == 0){
+            //constante aleatória 
+            float constante = randomFloat(50);
+            char str_cons[14]; 
+            gcvt(constante, 3, str_cons);
+            individuo = criaArvore(str_cons);
 
+        } else {
+            individuo = criaArvore((char*)terminalset[geraNum(TERM_LINE - 1)]);
+        }
         //insere as folhas
         individuo->filhoesquerdo = gerarPopulacao(nivel - 1, individuo->filhoesquerdo);
         individuo->filhodireito = gerarPopulacao(nivel - 1, individuo->filhodireito);
