@@ -68,7 +68,7 @@ void posordem(arvoregenes nodo){
 void insiraNodo(arvoregenes *alvo,  char *chave){
     arvoregenes filho; 
     filho = criaArvore(chave);
-    //preenche uma das entradas de nó, caso já estejam cheios, simplismente pare a execução e delete o nodo
+    //preenche uma das entradas de nó, caso já estejam cheios, simplesmente pare a execução e delete o nodo
     if (*alvo == NULL){
         *alvo = filho; 
     } else {
@@ -87,6 +87,40 @@ void apagaNodo(arvoregenes *nodo){
         //libera a memória 
         free(*nodo);
         *nodo = NULL; 
+    }
+}
+
+void substituirFolha(arvoregenes *nodo, arvoregenes novo_nodo){
+    arvoregenes alvo; 
+    if (geraNum(1) == 0){
+        //esquerda
+        alvo = (*nodo)->filhoesquerdo;
+    } else { 
+        //direita 
+        alvo = (*nodo)->filhodireito;
+    }
+
+    if (alvo->filhodireito != NULL && alvo->filhoesquerdo != NULL){
+        substituirFolha(&alvo, novo_nodo);
+    } else {
+        apagaNodo(nodo);
+        *nodo = copiaArvore(novo_nodo);
+    }
+}
+
+int profundidade(arvoregenes nodo){
+    if (nodo == NULL){
+        return 0; 
+    } else {
+        //percorra para cada subárvore 
+        int eProfundidade = profundidade(nodo->filhoesquerdo);
+        int dProfundidade = profundidade(nodo->filhodireito);
+
+        if (eProfundidade > dProfundidade){
+            return (eProfundidade + 1);
+        } else {
+            return (dProfundidade + 1);
+        }
     }
 }
 
@@ -125,4 +159,5 @@ arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
 
     return individuo; 
 }
+
 

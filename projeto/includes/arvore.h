@@ -25,11 +25,14 @@ using namespace std;
     arvoregenes criaArvore(char *chave);
     arvoregenes copiaArvore(arvoregenes nodo);
     int geraNum(int max);
+    int profundidade(arvoregenes nodo);
     void insiraNodo(arvoregenes *alvo, char *chave);
     void apagaNodo(arvoregenes *nodo);
     void preordem(arvoregenes nodo);
     void posordem(arvoregenes nodo);
     void ordem(arvoregenes nodo);
+    void substituirFolha(arvoregenes *nodo, arvoregenes novo_nodo);
+    
     //geração da população 
      
     arvoregenes gerarPopulacao(int nivel, arvoregenes individuo);

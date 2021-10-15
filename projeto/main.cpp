@@ -1,6 +1,7 @@
 #include "includes/arvore.h"
 #include <stdio.h>
 #include <iostream>
+#include <cstring>
 #include "includes/problema.h"
 #include "includes/funcoes.h"
 #include <vector>
@@ -26,37 +27,40 @@ void mutacao(){
 
 }
 
-//A função que irá cruzar um indivíduo com outro
-void crossover(){
 
+arvoregenes pegarGene(arvoregenes programa){
+	
 }
 
-arvoregenes pontoCrossover(arvoregenes programa){
-	//50% de chance para o programa ir recursivamente em um dos lados
-	arvoregenes ponto;
-	arvoregenes alvo; 
-	ponto = programa;
-	if (geraNum(1) == 0){
-		//vai pra esquerda 
-		alvo = programa->filhoesquerdo;
+
+//A função que irá cruzar um indivíduo com outro
+arvoregenes crossover(arvoregenes pai, arvoregenes mae){
+	char * chave; 
+	arvoregenes pai_genes;
+	arvoregenes mae_genes; 
+	arvoregenes filho; 
+	
+	pai_genes = copiaArvore(pai->filhodireito);
+	mae_genes = copiaArvore (mae->filhoesquerdo);
+
+	//se o pai for apenas um terminal
+	if (profundidade(pai) == 1){
+		int pos = geraNum(FUNC_LINE - 1);
+		chave = (char *) malloc(strlen(funcset[pos]));
+		strcpy(chave, funcset[pos]);
 	} else {
-		//vai para a direita 
-		alvo = programa->filhodireito;
+		chave = (char *) malloc(strlen(pai->chave)+1);
+		strcpy(chave, pai->chave);
 	}
 
-	if(alvo == NULL){
-		cout << "Não chegamos a fundo";
-		return ponto; 
-	} else { 
-		if (alvo->filhodireito == NULL || alvo->filhoesquerdo == NULL){
-			//se uma dessas condições for verdade, estamos pertos dos nós terminais
-			cout << "Entramos nos filhos"; 
-			return ponto;
-		} else {
-			pontoCrossover(alvo);
-		}
-	}
-	
+
+	filho = criaArvore(chave);
+
+	filho->filhodireito = pai_genes;
+	filho->filhoesquerdo = mae_genes;
+
+	return filho;
+
 }
 
 //a função que vai lidar com o problema em si
@@ -108,9 +112,13 @@ int main(){
 	//	cout << "yeah";
 	//}
 	ordem(programas[0]);
-	arvoregenes p = pontoCrossover(programas[0]);
-	cout << "\n";
-	ordem(p);
+	cout << ":Pai" << "\n";
+	ordem(programas[1]);
+	cout << ":Mae\n";
+	//arvoregenes * p = pontoCrossover(programas[0]);
+	arvoregenes p = crossover(programas[0], programas[1]);
+	saida s =  f.eval(p, 2, 2);
+	cout << (int)s.numerico;
 
 	return 0;
 }
