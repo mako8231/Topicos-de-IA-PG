@@ -21,17 +21,18 @@ struct fout
 	bool solucao_valida;  
 };
 
+fout melhor_resultado = {0,0,0,true};
 
-//variaveis de decisão 
-vector<vector<arvoregenes>> geracoes; 
 
 //gerações
 int gens = 100;
 
 
 //Reproduz os genes da população seguinte 
-void reproducao(){
-	
+arvoregenes reproducao(arvoregenes programa){
+	//simplesmente copia a árvore 
+	arvoregenes novo_individuo = copiaArvore(programa);
+	return novo_individuo;
 }
 
 //Cria uma subárvore aleatória com base no ponto de crossover 
@@ -99,11 +100,35 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 
 }
 
- void PG(){
+ void PG(vector<arvoregenes> individuos){
+	 //Parâmetros de GP
+	 vector<arvoregenes> nova_geracao; 
 	 int geracoes = 0;
-	 int mutacao_prob = 0.04;
-	 int crossover_prob = 0.3;
-	 int reproducao_prob = 1 - (crossover_prob + mutacao_prob);
+
+	 float mutacao_prob = 0.04;
+	 float crossover_prob = 0.3;
+	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
+
+	float rolls = randomFloat(0, 1);
+
+	 //Selecionar os indivíduos com solução válida 
+	 for (int i=0; i<individuos.size(); i++){
+		 fout resultado = fitness(individuos[i]);
+		 if (resultado.solucao_valida){
+			//entra em observação
+			//critérios para a seleção natural
+			
+			//condições de otimização
+			//assim, é possível saber o quão perto estamos da solução do problema
+			
+			if(resultado.capacidades_mantidas > melhor_resultado.capacidades_mantidas && resultado.demandas_atendidas > melhor_resultado.demandas_atendidas && resultado.desperdicio < melhor_resultado.desperdicio){
+				melhor_resultado.capacidades_mantidas = resultado.capacidades_mantidas;
+				melhor_resultado.demandas_atendidas = resultado.demandas_atendidas;
+				melhor_resultado.desperdicio = resultado.desperdicio;
+			}
+			
+		 }
+	 }
  }
 
 //a função que vai lidar com o problema em si
@@ -133,7 +158,7 @@ fout fitness(arvoregenes individuo){
 	for (int i = 0; i<MAX_DEMANDA; i++){
 		cortes_padrao[i] = cortePorPadrao(padroes, i, cortes);
 		//Primeira restrição, ser um inteiro positivo 
-		if (cortes_padrao[i] > 0){
+		if (cortes[i] > 0){
 			medida.solucao_valida = true; 
 		}
 		//Segunda restrição, atender a demanda
@@ -148,10 +173,6 @@ fout fitness(arvoregenes individuo){
 
 	//calcular o total de desperdicio
 	medida.desperdicio = minimize(desp, cortes);
-	/**cout << medida.capacidades_mantidas << "\n";
-	cout << medida.demandas_atendidas << "\n";
-	cout << medida.solucao_valida << "\n";
-	cout << medida.desperdicio << "\n";**/
 
 	return medida; 
 
@@ -188,9 +209,6 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	geracoes.push_back(programas);
-
-	fitness(geracoes[0][0]);
 
 	return 0;
 }
