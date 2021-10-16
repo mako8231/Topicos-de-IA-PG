@@ -57,7 +57,7 @@
             ~Funcoes();
 };
 
-int geraNum(int max);
-float randomFloat(float max);
+int geraNum(int min, int max);
+float randomFloat(float min, float max);
 
 #endif

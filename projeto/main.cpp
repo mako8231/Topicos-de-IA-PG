@@ -11,51 +11,87 @@
 
 using namespace std;
 Funcoes f;
+int prof = DEPTH_I; 
+
+struct fout 
+{
+	float desperdicio; 
+	bool demanda_atendida;
+	bool capacidade_mantida;
+};
+
 
 //variaveis de decisão 
 vector<int> x; //numero de cortes
+vector<vector<arvoregenes>> geracoes; 
 
+//gerações
+int gens = 100;
 
 
 //Reproduz os genes da população seguinte 
 void reproducao(){
-
+	
 }
 
 //Cria uma subárvore aleatória com base no ponto de crossover 
-void mutacao(){
-
-}
-
-
-arvoregenes pegarGene(arvoregenes programa){
+arvoregenes mutacao(arvoregenes programa){
 	
+	arvoregenes genes;  
+	char *chave; 
+
+	//criar a chave 
+	chave = (char *) malloc(strlen(programa->chave)+1);
+	strcpy(chave, programa->chave);
+
+	//mutante criado 
+	arvoregenes mutante; 
+
+	//raiz baseada no pai 
+	mutante = criaArvore(chave);
+	//gera uma ramificação aleatória
+	arvoregenes alteracao = gerarPopulacao(DEPTH_I, alteracao);
+
+	if(geraNum(0, 1) == 0){
+		//copia a subarvore esquerda
+		genes = copiaArvore(programa->filhoesquerdo);
+		mutante->filhoesquerdo = genes; 
+		mutante->filhodireito = alteracao;
+	} else {
+		//copia a subarvore direita 
+		genes = copiaArvore(programa->filhodireito);
+		mutante->filhodireito = genes; 
+		mutante->filhoesquerdo = alteracao; 
+	}
+
+	return mutante; 
+
 }
 
 
 //A função que irá cruzar um indivíduo com outro
 arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 	char * chave; 
+	//genes dos pais 
 	arvoregenes pai_genes;
 	arvoregenes mae_genes; 
+	 //a árvore que será a junção dos pais 
 	arvoregenes filho; 
 	
+	//copia lateralmente as árvores pais 
 	pai_genes = copiaArvore(pai->filhodireito);
 	mae_genes = copiaArvore (mae->filhoesquerdo);
 
 	//se o pai for apenas um terminal
-	if (profundidade(pai) == 1){
-		int pos = geraNum(FUNC_LINE - 1);
-		chave = (char *) malloc(strlen(funcset[pos]));
-		strcpy(chave, funcset[pos]);
-	} else {
-		chave = (char *) malloc(strlen(pai->chave)+1);
-		strcpy(chave, pai->chave);
-	}
+	
+	chave = (char *) malloc(strlen(pai->chave)+1);
+	strcpy(chave, pai->chave);
+	
 
-
+	//cria a raiz baseada no pai
 	filho = criaArvore(chave);
 
+	//insere os novos nodos nas laterais do filho
 	filho->filhodireito = pai_genes;
 	filho->filhoesquerdo = mae_genes;
 
@@ -65,8 +101,20 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
-void fitness(){
-	
+int fitness(vector<vector<arvoregenes>>& geracoes, int index){
+	//Se for maior que zero, logo a solução 
+	//está aceitavel e será enviada para a próxima geração
+	int medida = 0;
+	saida s;
+
+	//executar cada programa individualmente e verificar se sua saída corresponde com as condições impostas 
+	//à solução do problema 
+	for(int i = 0; i<geracoes[index].size(); i++){
+		for (int j=0; i<MAX_L; i++){
+			float total = processarCortes(geracoes[index][i], j, padroes);
+		}
+		
+	}
 }
 
 
@@ -76,7 +124,7 @@ vector<arvoregenes> populacaoInicial(int q, int maxlv){
 	vector<arvoregenes> individuos; 
 	for (int i = 0; i<q; i++){
 		//individuos[i] = gerarPopulacao(geraNum(maxlv), individuos[i]);
-		arvoregenes programa = gerarPopulacao(geraNum(maxlv), programa);
+		arvoregenes programa = gerarPopulacao(geraNum(1, maxlv), programa);
 		individuos.push_back(programa);
 	}
 	return individuos;
@@ -93,12 +141,12 @@ void limparPopulacao(vector<arvoregenes>& pop){
 	}
 }
 
-float executarPrograma(arvoregenes programa, int indice, float padroes[MAX_L][MAX_C]){
+float processarCortes(arvoregenes programa, int indice, float padroes[MAX_L][MAX_C]){
 	float t; 
 	
 	for (int j=0; j<MAX_C; j++){
 		saida s = f.eval(programa, peca, d[j].tamanho);
-		t += (padroes[indice][j] * d[indice].tamanho) * s.numerico;
+		t += (padroes[indice][j] * d[indice].tamanho) * (int)s.numerico;
 	}
 
 	return t;
@@ -107,18 +155,13 @@ float executarPrograma(arvoregenes programa, int indice, float padroes[MAX_L][MA
 
 
 int main(){
+	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	//if (executarPrograma(programas[0], 0, padroes) >= (d[0].tamanho * d[0].qnt) && (executarPrograma(programas[0], 0, padroes) <= (d[0].tamanho * d[0].qnt) + qnt)){
-	//	cout << "yeah";
-	//}
-	ordem(programas[0]);
-	cout << ":Pai" << "\n";
-	ordem(programas[1]);
-	cout << ":Mae\n";
-	//arvoregenes * p = pontoCrossover(programas[0]);
-	arvoregenes p = crossover(programas[0], programas[1]);
-	saida s =  f.eval(p, 2, 2);
-	cout << (int)s.numerico;
+	geracoes.push_back(programas);
+
+	for (int i = 0; i<gens; i++){
+		fitness(geracoes, i);
+	}
 
 	return 0;
 }

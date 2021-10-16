@@ -135,17 +135,17 @@ saida Funcoes::eval(arvoregenes programa, float l, float d){
 }
 
 //gera um número aleatório 
-int geraNum(int max){
+int geraNum(int min, int max){
     std::random_device rd; // obtém um numero aleatorio pelo hardware 
     std::mt19937 gen(rd()); // semea o gerador 
-    std::uniform_int_distribution<> distr(0, max); // define o alcance 
+    std::uniform_int_distribution<> distr(min, max); // define o alcance 
 
     return distr(gen);  // gera os números e retorna :) 
 }
 
-float randomFloat(float max){
+float randomFloat(float min, float max){
 	std::random_device rd; 
 	std::default_random_engine eng(rd());
-	std::uniform_real_distribution<> distr(0, max);
+	std::uniform_real_distribution<> distr(min, max);
 	return distr(eng);
 }

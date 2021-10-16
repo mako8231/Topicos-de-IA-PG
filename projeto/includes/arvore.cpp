@@ -92,7 +92,7 @@ void apagaNodo(arvoregenes *nodo){
 
 void substituirFolha(arvoregenes *nodo, arvoregenes novo_nodo){
     arvoregenes alvo; 
-    if (geraNum(1) == 0){
+    if (geraNum(0,1) == 0){
         //esquerda
         alvo = (*nodo)->filhoesquerdo;
     } else { 
@@ -129,26 +129,26 @@ arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
     if (nivel > 0){
         int n_nivel = nivel -1;
         //cria árvore 
-        individuo = criaArvore((char*)funcset[geraNum(FUNC_LINE - 1)]);
+        individuo = criaArvore((char*)funcset[geraNum(0, FUNC_LINE - 1)]);
         
         //insere os filhos aleatoriamente 
-        individuo->filhoesquerdo = gerarPopulacao(geraNum(n_nivel), individuo->filhoesquerdo);
-        individuo->filhodireito = gerarPopulacao(geraNum(n_nivel), individuo->filhodireito);
+        individuo->filhoesquerdo = gerarPopulacao(geraNum(0, n_nivel), individuo->filhoesquerdo);
+        individuo->filhodireito = gerarPopulacao(geraNum(0, n_nivel), individuo->filhodireito);
         return individuo; 
     } 
     //inserção de nós folhas (terminais)
     else if (nivel == 0) {
         //criar nodos a partir da lista de terminais 
         //criar uma probabilidade de entrar uma variável constante aleatória ou uma variável do conjunto de terminais 
-        if (geraNum(2) == 0){
+        if (geraNum(0, 2) == 0){
             //constante aleatória 
-            float constante = randomFloat(50);
+            float constante = randomFloat(0, 50);
             char str_cons[14]; 
-            gcvt(constante, 3, str_cons);
+            gcvt(constante, 5, str_cons);
             individuo = criaArvore(str_cons);
 
         } else {
-            individuo = criaArvore((char*)terminalset[geraNum(TERM_LINE - 1)]);
+            individuo = criaArvore((char*)terminalset[geraNum(0, TERM_LINE - 1)]);
         }
         //insere as folhas
         individuo->filhoesquerdo = gerarPopulacao(nivel - 1, individuo->filhoesquerdo);
