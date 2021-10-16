@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <random>
+#include <cmath>
 
 using namespace std; 
 
@@ -19,24 +20,24 @@ Funcoes::Funcoes(){
 
 //operação de soma 
 float Funcoes::soma(float x1, float x2){
-    return x1 + x2;
+    return abs(x1 + x2);
 }
 
 //operação de subtração
 float Funcoes::subtracao(float x1, float x2){
-    return x1 - x2;
+    return abs(x1 - x2);
 }
 
 //operação de multiplicação
 float Funcoes::multiplicacao(float x1, float x2){
-    return x1 * x2;
+    return abs(x1 * x2);
 }
 
 //operação de divisão
 float Funcoes::divisao(float x1, float x2){
     if (x2 == 0)
-        return x1;
-    return x1/x2;
+        return abs(x1);
+    return abs(x1/x2);
 }
 
 //operação de resto
@@ -44,6 +45,10 @@ float Funcoes::resto(float x1, float x2){
     if (x2 == 0)
         return x1;
     return (int)x1%(int)x2;
+}
+
+float Funcoes::sen(float x1, float x2){ 
+    return abs(x1 * sin(x2));
 }
 
 //verifica se x1 é menor que x2 
@@ -108,6 +113,9 @@ saida Funcoes::eval(arvoregenes programa, float l, float d){
 
     else if (strcmp(programa->chave, "MOD") == 0)
         s.numerico = resto(valor_e.numerico, valor_d.numerico);
+
+    else if (strcmp(programa->chave, "SIN") == 0)
+        s.numerico = sen(valor_e.numerico, valor_d.numerico);
 
     else if (strcmp(programa->chave, ">=") == 0)
         s.binario = maiorique(valor_e.numerico, valor_d.numerico);

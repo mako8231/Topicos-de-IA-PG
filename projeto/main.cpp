@@ -6,8 +6,10 @@
 #include <cstring>
 #include <vector>
 
-#define POPMAX 800
-#define DEPTH_I 3
+#define POPMAX 1000
+#define DEPTH_I 15
+
+
 
 using namespace std;
 Funcoes f;
@@ -25,8 +27,9 @@ fout melhor_resultado = {0,0,0,true};
 
 
 //gerações
-int gens = 100;
-
+int geracoes = 0;
+fout fitness(arvoregenes individuo);
+void limparPopulacao(vector<arvoregenes>& pop);
 
 //Reproduz os genes da população seguinte 
 arvoregenes reproducao(arvoregenes programa){
@@ -100,12 +103,12 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 
 }
 
- void PG(vector<arvoregenes> individuos){
+ void PG(vector<arvoregenes>& individuos){
 	 //Parâmetros de GP
 	 vector<arvoregenes> nova_geracao; 
-	 int geracoes = 0;
+	 arvoregenes individuo_selecionado; 
 
-	 float mutacao_prob = 0.04;
+	 float mutacao_prob = 0.09;
 	 float crossover_prob = 0.3;
 	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
@@ -114,21 +117,41 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 	 //Selecionar os indivíduos com solução válida 
 	 for (int i=0; i<individuos.size(); i++){
 		 fout resultado = fitness(individuos[i]);
-		 if (resultado.solucao_valida){
-			//entra em observação
-			//critérios para a seleção natural
-			
-			//condições de otimização
-			//assim, é possível saber o quão perto estamos da solução do problema
-			
-			if(resultado.capacidades_mantidas > melhor_resultado.capacidades_mantidas && resultado.demandas_atendidas > melhor_resultado.demandas_atendidas && resultado.desperdicio < melhor_resultado.desperdicio){
+
+		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas && resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas && resultado.desperdicio <= melhor_resultado.desperdicio){
 				melhor_resultado.capacidades_mantidas = resultado.capacidades_mantidas;
 				melhor_resultado.demandas_atendidas = resultado.demandas_atendidas;
 				melhor_resultado.desperdicio = resultado.desperdicio;
-			}
 			
+			
+			//rolls é a probabilidade dos eventos de procriação acontecer
+			//rolls <= 0.0x = mutação
+			//rolls <= 0.x = crossover 
+			//rolls <= 1 - (mutação + crossover) = reprodução normal
+			if (rolls <= mutacao_prob){
+				individuo_selecionado = mutacao(individuos[i]);
+			} else if(rolls <= crossover_prob) {
+				//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
+				//caso contrário, apenas reproduza o indivíduo para a geração seguinte
+				if (nova_geracao.size() > 0){
+					//seleciona uma mãe aleatoriamente
+					arvoregenes mae = nova_geracao[geraNum(0, nova_geracao.size() - 1)];
+					individuo_selecionado = crossover(individuos[i], mae);
+				} else {
+					//apenas inclui o individuo selecionado ao vetor de gerações novas
+					individuo_selecionado = copiaArvore(individuos[i]);
+				}
+			} else {
+				//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
+				individuo_selecionado = copiaArvore(individuos[i]);
+			}
+			//insira o indivíduo selecionado para a geração seguinte 
+			nova_geracao.push_back(individuo_selecionado);
 		 }
 	 }
+	 limparPopulacao(individuos);
+	 geracoes += 1; 
+	 individuos = nova_geracao;
  }
 
 //a função que vai lidar com o problema em si
@@ -139,7 +162,7 @@ fout fitness(arvoregenes individuo){
 	float cortes_padrao[MAX_DEMANDA];
 
 	//medida de validação
-	fout medida; 
+	fout medida = {0,0,0,false}; 
 	//calcular os disperdícios 
 	float * desp;
 	//desp(i) sendo i itens de cada padrão de corte
@@ -154,7 +177,7 @@ fout fitness(arvoregenes individuo){
 	}
 	
 	//armazena os cortes padrões para cada demanda 
-	medida.capacidades_mantidas = 0; 
+	
 	for (int i = 0; i<MAX_DEMANDA; i++){
 		cortes_padrao[i] = cortePorPadrao(padroes, i, cortes);
 		//Primeira restrição, ser um inteiro positivo 
@@ -209,6 +232,20 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-
+	ordem(programas[0]);
+	cout << " " << programas.size();
+	cout << "\n";
+	PG(programas);
+	ordem(programas[0]);
+	cout << " " << programas.size();
+	PG(programas);
+	ordem(programas[0]);
+	cout << " " << programas.size();
+	cout << "\n";
+	cout << melhor_resultado.capacidades_mantidas;
+	cout << "\n";
+	cout << melhor_resultado.demandas_atendidas;
+	cout << "\n";
+	cout << melhor_resultado.desperdicio;
 	return 0;
 }

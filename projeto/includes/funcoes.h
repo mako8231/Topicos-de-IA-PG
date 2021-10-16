@@ -10,7 +10,7 @@
 	    bool binario; 
     };
 
-#define FUNC_LINE 4 
+#define FUNC_LINE 5 
 #define FUNC_COL 4
 
 #define TERM_LINE 2
@@ -20,6 +20,7 @@
         "-",
         "/",
         "*",
+        "SIN",
         //">=",
         //"<=",
         //"MOD",
@@ -44,6 +45,7 @@
             float multiplicacao(float x1, float x2);
             float divisao(float x1, float x2);
             float resto(float x1, float x2);
+            float sen(float x1, float x2);
             bool menorique(float x1, float x2);
             bool maiorique(float x1, float x2);
             bool AND(bool x1, bool x2);
