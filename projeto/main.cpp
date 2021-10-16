@@ -225,10 +225,6 @@ void limparPopulacao(vector<arvoregenes>& pop){
 	}
 }
 
-
-
-
-
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
