@@ -1,12 +1,12 @@
 #include "includes/arvore.h"
+#include "includes/problema.h"
+#include "includes/funcoes.h"
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
-#include "includes/problema.h"
-#include "includes/funcoes.h"
 #include <vector>
 
-#define POPMAX 80
+#define POPMAX 800
 #define DEPTH_I 3
 
 using namespace std;
@@ -16,13 +16,13 @@ int prof = DEPTH_I;
 struct fout 
 {
 	float desperdicio; 
-	bool demanda_atendida;
-	bool capacidade_mantida;
+	int demandas_atendidas;
+	int capacidades_mantidas;
+	bool solucao_valida;  
 };
 
 
 //variaveis de decisão 
-vector<int> x; //numero de cortes
 vector<vector<arvoregenes>> geracoes; 
 
 //gerações
@@ -99,22 +99,62 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 
 }
 
+ void PG(){
+	 int geracoes = 0;
+	 int mutacao_prob = 0.04;
+	 int crossover_prob = 0.3;
+	 int reproducao_prob = 1 - (crossover_prob + mutacao_prob);
+ }
+
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
-int fitness(vector<vector<arvoregenes>>& geracoes, int index){
-	//Se for maior que zero, logo a solução 
-	//está aceitavel e será enviada para a próxima geração
-	int medida = 0;
-	saida s;
+fout fitness(arvoregenes individuo){
+	//variáveis de decisão
+	int cortes[MAX_L]; 
+	float cortes_padrao[MAX_DEMANDA];
 
-	//executar cada programa individualmente e verificar se sua saída corresponde com as condições impostas 
-	//à solução do problema 
-	for(int i = 0; i<geracoes[index].size(); i++){
-		for (int j=0; i<MAX_L; i++){
-			float total = processarCortes(geracoes[index][i], j, padroes);
-		}
-		
+	//medida de validação
+	fout medida; 
+	//calcular os disperdícios 
+	float * desp;
+	//desp(i) sendo i itens de cada padrão de corte
+	desp = desperdicio(padroes, d);
+
+	//gerar as variáveis de decisão com base na demanda e largura da peça 
+	for (int i = 0; i<MAX_L; i++){
+		for (int j=0; j<MAX_C; j++){
+			saida s = f.eval(individuo, peca, padroes[i][j] * d[j].tamanho);
+			cortes[i] = (int)s.numerico; 
+		}	
 	}
+	
+	//armazena os cortes padrões para cada demanda 
+	medida.capacidades_mantidas = 0; 
+	for (int i = 0; i<MAX_DEMANDA; i++){
+		cortes_padrao[i] = cortePorPadrao(padroes, i, cortes);
+		//Primeira restrição, ser um inteiro positivo 
+		if (cortes_padrao[i] > 0){
+			medida.solucao_valida = true; 
+		}
+		//Segunda restrição, atender a demanda
+		if (cortes_padrao[i] >= (d[i].tamanho * d[i].qnt)){
+			medida.demandas_atendidas += 1; 
+		}
+		//Terceira restrição, não ultrapassar o estoque 
+		if (cortes_padrao[i] <= (d[i].tamanho * d[i].qnt) + qnt){
+			medida.capacidades_mantidas += 1; 
+		}
+	}
+
+	//calcular o total de desperdicio
+	medida.desperdicio = minimize(desp, cortes);
+	/**cout << medida.capacidades_mantidas << "\n";
+	cout << medida.demandas_atendidas << "\n";
+	cout << medida.solucao_valida << "\n";
+	cout << medida.desperdicio << "\n";**/
+
+	return medida; 
+
 }
 
 
@@ -141,16 +181,7 @@ void limparPopulacao(vector<arvoregenes>& pop){
 	}
 }
 
-float processarCortes(arvoregenes programa, int indice, float padroes[MAX_L][MAX_C]){
-	float t; 
-	
-	for (int j=0; j<MAX_C; j++){
-		saida s = f.eval(programa, peca, d[j].tamanho);
-		t += (padroes[indice][j] * d[indice].tamanho) * (int)s.numerico;
-	}
 
-	return t;
-}
 
 
 
@@ -159,9 +190,7 @@ int main(){
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
 	geracoes.push_back(programas);
 
-	for (int i = 0; i<gens; i++){
-		fitness(geracoes, i);
-	}
+	fitness(geracoes[0][0]);
 
 	return 0;
 }
