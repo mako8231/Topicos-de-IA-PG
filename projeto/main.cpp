@@ -23,7 +23,7 @@ struct fout
 	bool solucao_valida;  
 };
 
-fout melhor_resultado = {0,0,0,true};
+fout melhor_resultado = {1000,0,0,true};
 
 
 //gerações
@@ -103,13 +103,27 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 
 }
 
- void PG(vector<arvoregenes>& individuos){
+void atualizarParametros(fout novos_parametros, fout *parametros){
+	if (novos_parametros.capacidades_mantidas > (*parametros).capacidades_mantidas){
+		(*parametros).capacidades_mantidas = novos_parametros.capacidades_mantidas;
+	} 
+
+	if (novos_parametros.demandas_atendidas > (*parametros).demandas_atendidas){
+		(*parametros).demandas_atendidas = novos_parametros.demandas_atendidas;
+	} 
+
+	if (novos_parametros.desperdicio < (*parametros).desperdicio){
+		(*parametros).desperdicio = novos_parametros.desperdicio;
+	} 
+}
+
+void PG(vector<arvoregenes>& individuos){
 	 //Parâmetros de GP
 	 vector<arvoregenes> nova_geracao; 
 	 arvoregenes individuo_selecionado; 
 
-	 float mutacao_prob = 0.09;
-	 float crossover_prob = 0.3;
+	 float mutacao_prob = 0.50;
+	 float crossover_prob = 0.2;
 	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
 	float rolls = randomFloat(0, 1);
@@ -118,10 +132,8 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 	 for (int i=0; i<individuos.size(); i++){
 		 fout resultado = fitness(individuos[i]);
 
-		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas && resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas && resultado.desperdicio <= melhor_resultado.desperdicio){
-				melhor_resultado.capacidades_mantidas = resultado.capacidades_mantidas;
-				melhor_resultado.demandas_atendidas = resultado.demandas_atendidas;
-				melhor_resultado.desperdicio = resultado.desperdicio;
+		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || resultado.desperdicio <= melhor_resultado.desperdicio){
+			atualizarParametros(resultado, &melhor_resultado);
 			
 			
 			//rolls é a probabilidade dos eventos de procriação acontecer
@@ -235,13 +247,22 @@ int main(){
 	ordem(programas[0]);
 	cout << " " << programas.size();
 	PG(programas);
+	cout << "\n";
 	ordem(programas[0]);
 	cout << " " << programas.size();
 	cout << "\n";
-	cout << melhor_resultado.capacidades_mantidas;
+	PG(programas);
+	ordem(programas[0]);
+	cout << " " << programas.size();
 	cout << "\n";
-	cout << melhor_resultado.demandas_atendidas;
+	PG(programas);
+	ordem(programas[0]);
+	cout << " " << programas.size();
+
 	cout << "\n";
-	cout << melhor_resultado.desperdicio;
+	cout << melhor_resultado.capacidades_mantidas << "\n";
+	cout << melhor_resultado.demandas_atendidas << "\n";
+	cout << melhor_resultado.desperdicio << "\n";
+
 	return 0;
 }
