@@ -24,12 +24,19 @@ struct fout
 };
 
 fout melhor_resultado = {1000,0,0,true};
+int problema_resolvido = 0; 
 
 
 //gerações
 int geracoes = 0;
 fout fitness(arvoregenes individuo);
 void limparPopulacao(vector<arvoregenes>& pop);
+
+void printarResultado(fout resultado){
+	cout << "Capacidades mantidas: " << resultado.capacidades_mantidas << "\n";
+	cout << "Demandas atendidas: " << resultado.demandas_atendidas << "\n";
+	cout << "Desperdício: " << resultado.desperdicio << "\n";
+}
 
 //Reproduz os genes da população seguinte 
 arvoregenes reproducao(arvoregenes programa){
@@ -117,16 +124,22 @@ void atualizarParametros(fout novos_parametros, fout *parametros){
 	} 
 }
 
+bool solucionado(fout parametros){
+	return (parametros.capacidades_mantidas >= MAX_DEMANDA && parametros.demandas_atendidas >= MAX_DEMANDA && parametros.desperdicio >= 0);
+}
+
 void PG(vector<arvoregenes>& individuos){
 	 //Parâmetros de GP
 	 vector<arvoregenes> nova_geracao; 
 	 arvoregenes individuo_selecionado; 
 
-	 float mutacao_prob = 0.50;
-	 float crossover_prob = 0.2;
+	 float mutacao_prob = 0.2;
+	 float crossover_prob = 0.5;
 	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
 	float rolls = randomFloat(0, 1);
+
+	
 
 	 //Selecionar os indivíduos com solução válida 
 	 for (int i=0; i<individuos.size(); i++){
@@ -134,8 +147,11 @@ void PG(vector<arvoregenes>& individuos){
 
 		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || resultado.desperdicio <= melhor_resultado.desperdicio){
 			atualizarParametros(resultado, &melhor_resultado);
-			
-			
+			if (solucionado(resultado)){
+				problema_resolvido += 1; 
+			}	
+
+			printarResultado(resultado);
 			//rolls é a probabilidade dos eventos de procriação acontecer
 			//rolls <= 0.0x = mutação
 			//rolls <= 0.x = crossover 
@@ -240,29 +256,13 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	ordem(programas[0]);
-	cout << " " << programas.size();
-	cout << "\n";
-	PG(programas);
-	ordem(programas[0]);
-	cout << " " << programas.size();
-	PG(programas);
-	cout << "\n";
-	ordem(programas[0]);
-	cout << " " << programas.size();
-	cout << "\n";
-	PG(programas);
-	ordem(programas[0]);
-	cout << " " << programas.size();
-	cout << "\n";
-	PG(programas);
-	ordem(programas[0]);
-	cout << " " << programas.size();
+	while (programas.size() > 0)
+	{	
+		PG(programas);
+	}
 
-	cout << "\n";
-	cout << melhor_resultado.capacidades_mantidas << "\n";
-	cout << melhor_resultado.demandas_atendidas << "\n";
-	cout << melhor_resultado.desperdicio << "\n";
-
+	cout << "Gerações criadas: " << geracoes << "\n";
+	cout << "vezes que o problema foi resolvido: " << problema_resolvido << "\n";
+	printarResultado(melhor_resultado);
 	return 0;
 }

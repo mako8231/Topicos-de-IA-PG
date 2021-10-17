@@ -15,4 +15,6 @@
 
 7- A seleção natural funciona corretamente, entretanto é necessário fazer um polimento adequado aos métodos de crossover e mutação principalmente, de maneira que a árvore de expressões aumente até o seu limite imposto. Assim, é possível criar uma variabilidade consistente e que permita a uma tendência próxima à solução do problema.
 
+    7.1 Ajustei os parâmetros da seleção natural, o que permite tolerar mais indivíduos, segundo os testes, alguns se aproximam da solução do problema, mas não conseguem resolver inteiramente, talvez seja mesmo necessário ajustar o crossover e mutação que possam melhorar o resultado
+
 8 - Caso os programas finalmente evoluam de maneira que sejam capazes de resolver o problema, testar várias configurações de problemas diferentes para verificar se a inteligência artificial consegue resolver qualquer tipo de problema.
