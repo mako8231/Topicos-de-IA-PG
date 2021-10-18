@@ -151,7 +151,7 @@ void PG(vector<arvoregenes>& individuos){
 				problema_resolvido += 1; 
 			}	
 
-			printarResultado(resultado);
+			//printarResultado(resultado);
 			//rolls é a probabilidade dos eventos de procriação acontecer
 			//rolls <= 0.0x = mutação
 			//rolls <= 0.x = crossover 
@@ -202,6 +202,7 @@ fout fitness(arvoregenes individuo){
 			saida s = f.eval(individuo, peca, padroes[i][j] * d[j].tamanho);
 			cortes[i] = (int)s.numerico; 
 		}	
+			cout << cortes[i] << "\n";
 	}
 	
 	//armazena os cortes padrões para cada demanda 
@@ -213,11 +214,11 @@ fout fitness(arvoregenes individuo){
 			medida.solucao_valida = true; 
 		}
 		//Segunda restrição, atender a demanda
-		if (cortes_padrao[i] >= (d[i].tamanho * d[i].qnt)){
+		if (cortes_padrao[i] >= (d[i].qnt)){
 			medida.demandas_atendidas += 1; 
 		}
 		//Terceira restrição, não ultrapassar o estoque 
-		if (cortes_padrao[i] <= (d[i].tamanho * d[i].qnt) + qnt){
+		if (cortes_padrao[i] <= (d[i].qnt) + qnt){
 			medida.capacidades_mantidas += 1; 
 		}
 	}

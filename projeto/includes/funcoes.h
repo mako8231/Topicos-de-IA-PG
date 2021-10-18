@@ -10,7 +10,7 @@
 	    bool binario; 
     };
 
-#define FUNC_LINE 5 
+#define FUNC_LINE 5
 #define FUNC_COL 4
 
 #define TERM_LINE 2
