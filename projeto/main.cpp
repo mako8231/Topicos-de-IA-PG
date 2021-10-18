@@ -20,12 +20,13 @@ struct fout
 	float desperdicio; 
 	int demandas_atendidas;
 	int capacidades_mantidas;
-	bool solucao_valida;  
+	bool solucao_valida;   
 };
 
 fout melhor_resultado = {1000,0,0,true};
 int problema_resolvido = 0; 
 
+arvoregenes melhor_individuo;
 
 //gerações
 int geracoes = 0;
@@ -133,7 +134,7 @@ void PG(vector<arvoregenes>& individuos){
 	 vector<arvoregenes> nova_geracao; 
 	 arvoregenes individuo_selecionado; 
 
-	 float mutacao_prob = 0.2;
+	 float mutacao_prob = 0.3;
 	 float crossover_prob = 0.5;
 	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
@@ -149,6 +150,7 @@ void PG(vector<arvoregenes>& individuos){
 			atualizarParametros(resultado, &melhor_resultado);
 			if (solucionado(resultado)){
 				problema_resolvido += 1; 
+				melhor_individuo = copiaArvore(individuos[i]);
 			}	
 
 			//printarResultado(resultado);
@@ -182,6 +184,18 @@ void PG(vector<arvoregenes>& individuos){
 	 individuos = nova_geracao;
  }
 
+
+void gerarCortes(arvoregenes individuo, int *cortes){
+
+	for (int i = 0; i<MAX_L; i++){
+		for (int j=0; j<MAX_C; j++){
+			saida s = f.eval(individuo, peca, padroes[i][j] * d[j].tamanho);
+			cortes[i] = (int)s.numerico; 
+		}	
+			
+	}
+}
+
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 fout fitness(arvoregenes individuo){
@@ -197,13 +211,7 @@ fout fitness(arvoregenes individuo){
 	desp = desperdicio(padroes, d);
 
 	//gerar as variáveis de decisão com base na demanda e largura da peça 
-	for (int i = 0; i<MAX_L; i++){
-		for (int j=0; j<MAX_C; j++){
-			saida s = f.eval(individuo, peca, padroes[i][j] * d[j].tamanho);
-			cortes[i] = (int)s.numerico; 
-		}	
-			cout << cortes[i] << "\n";
-	}
+	gerarCortes(individuo, cortes);
 	
 	//armazena os cortes padrões para cada demanda 
 	
@@ -229,6 +237,7 @@ fout fitness(arvoregenes individuo){
 	return medida; 
 
 }
+
 
 
 //cria a população inicial com base em programas aleatórios 
@@ -257,11 +266,19 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	while (programas.size() > 0)
+	while (programas.size() >= 1)
 	{	
 		PG(programas);
 	}
 
+	int cortes[MAX_L];
+	gerarCortes(melhor_individuo, cortes); 
+	for (int i=0; i<MAX_L; i++){
+		cout << cortes[i] << "\n";
+	}
+
+	ordem(melhor_individuo);
+	cout << "\n";
 	cout << "Gerações criadas: " << geracoes << "\n";
 	cout << "vezes que o problema foi resolvido: " << problema_resolvido << "\n";
 	printarResultado(melhor_resultado);

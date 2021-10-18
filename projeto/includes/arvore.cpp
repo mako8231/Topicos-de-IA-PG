@@ -142,7 +142,7 @@ arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
         //criar uma probabilidade de entrar uma variável constante aleatória ou uma variável do conjunto de terminais 
         if (geraNum(0, 2) == 0){
             //constante aleatória 
-            float constante = randomFloat(0, 5);
+            float constante = randomFloat(0, 10);
             char str_cons[14]; 
             gcvt(constante, 5, str_cons);
             individuo = criaArvore(str_cons);
