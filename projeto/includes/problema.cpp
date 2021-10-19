@@ -12,10 +12,11 @@ float minimize(float *desperdicio, int *x){
     float total = 0; 
 
     //Percorre todos os elementos 
-    for(int i = 0; i<MAX_C; i++){
+    for(int i = 0; i<MAX_L; i++){
         total += desperdicio[i] * x[i]; 
-    }
+    }    
 
+    
     return total; 
 }
 
@@ -30,8 +31,8 @@ float * desperdicio(float p[MAX_L][MAX_C], demanda d[MAX_DEMANDA]){
             corteTotal += padroes[i][j] * d[j].tamanho;
         }
         desp[i] = peca - corteTotal;
-        
     } 
+
 
     return desp; 
 }

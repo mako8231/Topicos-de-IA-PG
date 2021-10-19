@@ -7,7 +7,7 @@
 #include <vector>
 
 #define POPMAX 1000
-#define DEPTH_I 15
+#define DEPTH_I 10
 
 
 
@@ -107,6 +107,9 @@ arvoregenes crossover(arvoregenes pai, arvoregenes mae){
 	filho->filhodireito = pai_genes;
 	filho->filhoesquerdo = mae_genes;
 
+	free(chave);
+	chave = NULL; 
+
 	return filho;
 
 }
@@ -134,25 +137,27 @@ void PG(vector<arvoregenes>& individuos){
 	 vector<arvoregenes> nova_geracao; 
 	 arvoregenes individuo_selecionado; 
 
-	 float mutacao_prob = 0.3;
-	 float crossover_prob = 0.5;
+	 float mutacao_prob = 0.04;
+	 float crossover_prob = 0.7;
 	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
-	float rolls = randomFloat(0, 1);
+	 float rolls = randomFloat(0, 1);
 
 	
 
 	 //Selecionar os indivíduos com solução válida 
+	 
 	 for (int i=0; i<individuos.size(); i++){
-		 fout resultado = fitness(individuos[i]);
-
-		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || resultado.desperdicio <= melhor_resultado.desperdicio){
+		
+		fout resultado = fitness(individuos[i]);
+		
+		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || (resultado.desperdicio <= melhor_resultado.desperdicio && resultado.desperdicio >= 0)){
 			atualizarParametros(resultado, &melhor_resultado);
 			if (solucionado(resultado)){
 				problema_resolvido += 1; 
 				melhor_individuo = copiaArvore(individuos[i]);
 			}	
-
+		
 			//printarResultado(resultado);
 			//rolls é a probabilidade dos eventos de procriação acontecer
 			//rolls <= 0.0x = mutação
@@ -163,6 +168,7 @@ void PG(vector<arvoregenes>& individuos){
 			} else if(rolls <= crossover_prob) {
 				//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
 				//caso contrário, apenas reproduza o indivíduo para a geração seguinte
+				
 				if (nova_geracao.size() > 0){
 					//seleciona uma mãe aleatoriamente
 					arvoregenes mae = nova_geracao[geraNum(0, nova_geracao.size() - 1)];
@@ -199,6 +205,7 @@ void gerarCortes(arvoregenes individuo, int *cortes){
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 fout fitness(arvoregenes individuo){
+
 	//variáveis de decisão
 	int cortes[MAX_L]; 
 	float cortes_padrao[MAX_DEMANDA];
@@ -209,7 +216,7 @@ fout fitness(arvoregenes individuo){
 	float * desp;
 	//desp(i) sendo i itens de cada padrão de corte
 	desp = desperdicio(padroes, d);
-
+	
 	//gerar as variáveis de decisão com base na demanda e largura da peça 
 	gerarCortes(individuo, cortes);
 	
@@ -217,6 +224,7 @@ fout fitness(arvoregenes individuo){
 	
 	for (int i = 0; i<MAX_DEMANDA; i++){
 		cortes_padrao[i] = cortePorPadrao(padroes, i, cortes);
+		
 		//Primeira restrição, ser um inteiro positivo 
 		if (cortes[i] > 0){
 			medida.solucao_valida = true; 
@@ -229,13 +237,15 @@ fout fitness(arvoregenes individuo){
 		if (cortes_padrao[i] <= (d[i].qnt) + qnt){
 			medida.capacidades_mantidas += 1; 
 		}
+		
 	}
 
 	//calcular o total de desperdicio
+	
 	medida.desperdicio = minimize(desp, cortes);
+	free(desp);
 
 	return medida; 
-
 }
 
 
@@ -255,7 +265,7 @@ vector<arvoregenes> populacaoInicial(int q, int maxlv){
 //Limpa a população de programas 
 void limparPopulacao(vector<arvoregenes>& pop){
 	if (pop.size() > 0){
-		for (int i=pop.size(); i>=0; i--)
+		for (int i=0; i<pop.size(); i++)
 			//deleta o nodo da memória para evitar memory leak
 			apagaNodo(&pop[i]);
 		//limpa todos os elementos do vetor
@@ -271,13 +281,13 @@ int main(){
 		PG(programas);
 	}
 
-	int cortes[MAX_L];
-	gerarCortes(melhor_individuo, cortes); 
-	for (int i=0; i<MAX_L; i++){
-		cout << cortes[i] << "\n";
-	}
+	//int cortes[MAX_L];
+	//gerarCortes(melhor_individuo, cortes); 
+	//for (int i=0; i<MAX_L; i++){
+	//	cout << cortes[i] << "\n";
+	//}
 
-	ordem(melhor_individuo);
+	//ordem(melhor_individuo);
 	cout << "\n";
 	cout << "Gerações criadas: " << geracoes << "\n";
 	cout << "vezes que o problema foi resolvido: " << problema_resolvido << "\n";
