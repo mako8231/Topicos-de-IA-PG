@@ -8,7 +8,7 @@
 
 #define POPMAX 1000
 #define DEPTH_I 10
-
+#define GEN_MAX 100
 
 
 using namespace std;
@@ -38,6 +38,7 @@ void printarResultado(fout resultado){
 	cout << "Demandas atendidas: " << resultado.demandas_atendidas << "\n";
 	cout << "Desperdício: " << resultado.desperdicio << "\n";
 }
+
 
 //Reproduz os genes da população seguinte 
 arvoregenes reproducao(arvoregenes programa){
@@ -135,7 +136,7 @@ bool solucionado(fout parametros){
 void PG(vector<arvoregenes>& individuos){
 	 //Parâmetros de GP
 	 vector<arvoregenes> nova_geracao; 
-	 arvoregenes individuo_selecionado; 
+	 arvoregenes prole; 
 
 	 float mutacao_prob = 0.04;
 	 float crossover_prob = 0.7;
@@ -143,49 +144,53 @@ void PG(vector<arvoregenes>& individuos){
 
 	 float rolls = randomFloat(0, 1);
 
-	
-
-	 //Selecionar os indivíduos com solução válida 
-	 
 	 for (int i=0; i<individuos.size(); i++){
-		
+
 		fout resultado = fitness(individuos[i]);
 		
+
 		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || (resultado.desperdicio <= melhor_resultado.desperdicio && resultado.desperdicio >= 0)){
 			atualizarParametros(resultado, &melhor_resultado);
 			if (solucionado(resultado)){
 				problema_resolvido += 1; 
-				melhor_individuo = copiaArvore(individuos[i]);
-			}	
-		
-			//printarResultado(resultado);
+				//melhor_individuo = copiaArvore(individuos[i]);
+			}
+			//se o indivíduo selecionado parcialmente resolve o problema (ou totalmente), reproduza-o para a geração seguinte 
+			nova_geracao.push_back(copiaArvore(individuos[i]));	
+			}
+			
+		}
+
+
+		if (nova_geracao.size() > 0 && nova_geracao.size() < POPMAX){
+
+			//começar a procriação 
 			//rolls é a probabilidade dos eventos de procriação acontecer
 			//rolls <= 0.0x = mutação
 			//rolls <= 0.x = crossover 
 			//rolls <= 1 - (mutação + crossover) = reprodução normal
-			if (rolls <= mutacao_prob){
-				individuo_selecionado = mutacao(individuos[i]);
-			} else if(rolls <= crossover_prob) {
-				//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
-				//caso contrário, apenas reproduza o indivíduo para a geração seguinte
-				
-				if (nova_geracao.size() > 0){
-					//seleciona uma mãe aleatoriamente
-					arvoregenes mae = nova_geracao[geraNum(0, nova_geracao.size() - 1)];
-					individuo_selecionado = crossover(individuos[i], mae);
+			while(nova_geracao.size() < POPMAX){
+				int pai_indice = geraNum(0, (nova_geracao.size() -1));
+				int mae_indice = geraNum(0, (nova_geracao.size() -1)); 
+
+				if (rolls <= mutacao_prob){
+					prole = mutacao(nova_geracao[pai_indice]);
+				} else if(rolls <= crossover_prob) {
+					//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
+					//caso contrário, apenas reproduza o indivíduo para a geração seguinte
+					prole = crossover(nova_geracao[pai_indice], nova_geracao[mae_indice]);
 				} else {
-					//apenas inclui o individuo selecionado ao vetor de gerações novas
-					individuo_selecionado = copiaArvore(individuos[i]);
+					//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
+					prole = copiaArvore(nova_geracao[pai_indice]);
 				}
-			} else {
-				//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
-				individuo_selecionado = copiaArvore(individuos[i]);
+				//insira o indivíduo selecionado para a geração seguinte 
+				nova_geracao.push_back(prole);
 			}
-			//insira o indivíduo selecionado para a geração seguinte 
-			nova_geracao.push_back(individuo_selecionado);
-		 }
-	 }
+			
+		}
+	
 	 limparPopulacao(individuos);
+	 
 	 geracoes += 1; 
 	 individuos = nova_geracao;
  }
@@ -273,24 +278,17 @@ void limparPopulacao(vector<arvoregenes>& pop){
 	}
 }
 
+
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	while (programas.size() >= 1)
-	{	
+
+	while (geracoes < GEN_MAX)
+	{
 		PG(programas);
 	}
-
-	//int cortes[MAX_L];
-	//gerarCortes(melhor_individuo, cortes); 
-	//for (int i=0; i<MAX_L; i++){
-	//	cout << cortes[i] << "\n";
-	//}
-
-	//ordem(melhor_individuo);
-	cout << "\n";
-	cout << "Gerações criadas: " << geracoes << "\n";
-	cout << "vezes que o problema foi resolvido: " << problema_resolvido << "\n";
-	printarResultado(melhor_resultado);
+	
+	cout << "Problemas Resolvidos: " << problema_resolvido;
+	
 	return 0;
 }
