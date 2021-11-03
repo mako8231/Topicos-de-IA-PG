@@ -117,6 +117,11 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes * prole_1, arvorege
 	//herda os genes 
 	herdarGenes(&cp_1, heranca_2);
 	herdarGenes(&cp_2, heranca_1);
+	
+	//libere a memória 
+	apagaNodo(&heranca_1);
+	apagaNodo(&heranca_2);
+
 	*prole_1 = genes_pai; *prole_2 = genes_mae;
 
 }
