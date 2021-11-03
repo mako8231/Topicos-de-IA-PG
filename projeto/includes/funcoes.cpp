@@ -151,6 +151,7 @@ int geraNum(int min, int max){
     return distr(gen);  // gera os números e retorna :) 
 }
 
+//gera um número real aleatório
 float randomFloat(float min, float max){
 	std::random_device rd; 
 	std::default_random_engine eng(rd());

@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 arvoregenes criaArvore(char *chave){
     arvoregenes arv;
     //Aloca a árvore na memória 
@@ -37,6 +38,33 @@ arvoregenes copiaArvore(arvoregenes nodo){
         return NULL; 
     }
 }
+
+
+arvoregenes crossoverPoint(arvoregenes nodo){
+    if (nodo != NULL){
+        //obtenha os tamanhos das subárvores e da raiz 
+        int tam = profundidade(nodo);
+        int tamdir = profundidade(nodo->filhodireito);
+        int tames = profundidade(nodo->filhoesquerdo);
+
+        if (tamdir == tames == 0){
+            return nodo;
+        }
+
+        //pegue um tamanho aleatório
+        int random = geraNum(1, tam);
+
+        if(random <= tames){
+            return crossoverPoint(nodo->filhoesquerdo);
+        } else if(random == (tames + 1)){ 
+            return nodo; 
+        } else {
+            return crossoverPoint(nodo->filhodireito);
+        }
+    } else {
+        return NULL; 
+    }
+} 
 
 void preordem(arvoregenes nodo){
     //ordem de exibição: (R, E, D)
@@ -159,5 +187,6 @@ arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
 
     return individuo; 
 }
+
 
 

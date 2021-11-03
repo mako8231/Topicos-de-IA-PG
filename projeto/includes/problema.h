@@ -31,7 +31,6 @@
         {1,  2,  0}, //0
         {0,  3,  1}, //1
     };
-
     float minimize(float *elementos, int *x);
     float * desperdicio(float p[MAX_L][MAX_C], demanda d[MAX_DEMANDA]);
     float sum(float *elemento, int *escalar, int tam);

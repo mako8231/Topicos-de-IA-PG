@@ -81,37 +81,43 @@ arvoregenes mutacao(arvoregenes programa){
 
 }
 
+//Essa função faz com que a subárvore alvo herde os atributos do gene transferido
+void herdarGenes(arvoregenes * genes, arvoregenes heranca){
+	//aloca o tamanho da nova chave na memória 
+	char * nova_chave; 
+	nova_chave = (char *) malloc(strlen(heranca->chave)+1);
+	//e copia o conteúdo da chave nova.
+	strcpy(nova_chave, heranca->chave);
+
+	//apaga os nodos laterais
+	apagaNodo((&(*genes)->filhodireito));
+	apagaNodo((&(*genes)->filhoesquerdo));
+	//insere a nova chave
+	free((*genes)->chave);
+	(*genes)->chave = nova_chave; 
+	//e então copia os genes para as subárvores
+	(*genes)->filhodireito = copiaArvore(heranca->filhodireito);
+	(*genes)->filhoesquerdo = copiaArvore(heranca->filhoesquerdo);
+}
 
 //A função que irá cruzar um indivíduo com outro
-arvoregenes crossover(arvoregenes pai, arvoregenes mae){
-	char * chave; 
-	//genes dos pais 
-	arvoregenes pai_genes;
-	arvoregenes mae_genes; 
-	 //a árvore que será a junção dos pais 
-	arvoregenes filho; 
-	
-	//copia lateralmente as árvores pais 
-	pai_genes = copiaArvore(pai->filhodireito);
-	mae_genes = copiaArvore (mae->filhoesquerdo);
+void crossover(arvoregenes pai, arvoregenes mae, arvoregenes * prole_1, arvoregenes * prole_2){
+	//copia os genes dos parentes
+	arvoregenes genes_pai = copiaArvore(pai);
+	arvoregenes genes_mae = copiaArvore(mae);
 
-	//se o pai for apenas um terminal
-	
-	chave = (char *) malloc(strlen(pai->chave)+1);
-	strcpy(chave, pai->chave);
-	
+	//pega os pontos de crossover 
+	arvoregenes cp_1 = crossoverPoint(genes_pai->filhodireito);
+	arvoregenes cp_2 = crossoverPoint(genes_mae->filhoesquerdo);
 
-	//cria a raiz baseada no pai
-	filho = criaArvore(chave);
+	//copia as heranças 
+	arvoregenes heranca_1 = copiaArvore(cp_1);
+	arvoregenes heranca_2 = copiaArvore(cp_2);
 
-	//insere os novos nodos nas laterais do filho
-	filho->filhodireito = pai_genes;
-	filho->filhoesquerdo = mae_genes;
-
-	free(chave);
-	chave = NULL; 
-
-	return filho;
+	//herda os genes 
+	herdarGenes(&cp_1, heranca_2);
+	herdarGenes(&cp_2, heranca_1);
+	*prole_1 = genes_pai; *prole_2 = genes_mae;
 
 }
 
@@ -134,65 +140,65 @@ bool solucionado(fout parametros){
 }
 
 void PG(vector<arvoregenes>& individuos){
-	 //Parâmetros de GP
-	 vector<arvoregenes> nova_geracao; 
-	 arvoregenes prole; 
+	//  //Parâmetros de GP
+	//  vector<arvoregenes> nova_geracao; 
+	//  arvoregenes prole; 
 
-	 float mutacao_prob = 0.04;
-	 float crossover_prob = 0.7;
-	 float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
+	//  float mutacao_prob = 0.04;
+	//  float crossover_prob = 0.7;
+	//  float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
 
-	 float rolls = randomFloat(0, 1);
+	//  float rolls = randomFloat(0, 1);
 
-	 for (int i=0; i<individuos.size(); i++){
+	//  for (int i=0; i<individuos.size(); i++){
 
-		fout resultado = fitness(individuos[i]);
+	// 	fout resultado = fitness(individuos[i]);
 		
 
-		if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || (resultado.desperdicio <= melhor_resultado.desperdicio && resultado.desperdicio >= 0)){
-			atualizarParametros(resultado, &melhor_resultado);
-			if (solucionado(resultado)){
-				problema_resolvido += 1; 
-				//melhor_individuo = copiaArvore(individuos[i]);
-			}
-			//se o indivíduo selecionado parcialmente resolve o problema (ou totalmente), reproduza-o para a geração seguinte 
-			nova_geracao.push_back(copiaArvore(individuos[i]));	
-			}
+	// 	if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || (resultado.desperdicio <= melhor_resultado.desperdicio && resultado.desperdicio >= 0)){
+	// 		atualizarParametros(resultado, &melhor_resultado);
+	// 		if (solucionado(resultado)){
+	// 			problema_resolvido += 1; 
+	// 			//melhor_individuo = copiaArvore(individuos[i]);
+	// 		}
+	// 		//se o indivíduo selecionado parcialmente resolve o problema (ou totalmente), reproduza-o para a geração seguinte 
+	// 		nova_geracao.push_back(copiaArvore(individuos[i]));	
+	// 		}
 			
-		}
+	// 	}
 
 
-		if (nova_geracao.size() > 0 && nova_geracao.size() < POPMAX){
+	// 	if (nova_geracao.size() > 0 && nova_geracao.size() < POPMAX){
 
-			//começar a procriação 
-			//rolls é a probabilidade dos eventos de procriação acontecer
-			//rolls <= 0.0x = mutação
-			//rolls <= 0.x = crossover 
-			//rolls <= 1 - (mutação + crossover) = reprodução normal
-			while(nova_geracao.size() < POPMAX){
-				int pai_indice = geraNum(0, (nova_geracao.size() -1));
-				int mae_indice = geraNum(0, (nova_geracao.size() -1)); 
+	// 		//começar a procriação 
+	// 		//rolls é a probabilidade dos eventos de procriação acontecer
+	// 		//rolls <= 0.0x = mutação
+	// 		//rolls <= 0.x = crossover 
+	// 		//rolls <= 1 - (mutação + crossover) = reprodução normal
+	// 		while(nova_geracao.size() < POPMAX){
+	// 			int pai_indice = geraNum(0, (nova_geracao.size() -1));
+	// 			int mae_indice = geraNum(0, (nova_geracao.size() -1)); 
 
-				if (rolls <= mutacao_prob){
-					prole = mutacao(nova_geracao[pai_indice]);
-				} else if(rolls <= crossover_prob) {
-					//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
-					//caso contrário, apenas reproduza o indivíduo para a geração seguinte
-					prole = crossover(nova_geracao[pai_indice], nova_geracao[mae_indice]);
-				} else {
-					//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
-					prole = copiaArvore(nova_geracao[pai_indice]);
-				}
-				//insira o indivíduo selecionado para a geração seguinte 
-				nova_geracao.push_back(prole);
-			}
+	// 			if (rolls <= mutacao_prob){
+	// 				prole = mutacao(nova_geracao[pai_indice]);
+	// 			} else if(rolls <= crossover_prob) {
+	// 				//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
+	// 				//caso contrário, apenas reproduza o indivíduo para a geração seguinte
+	// 				prole = crossover(nova_geracao[pai_indice], nova_geracao[mae_indice]);
+	// 			} else {
+	// 				//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
+	// 				prole = copiaArvore(nova_geracao[pai_indice]);
+	// 			}
+	// 			//insira o indivíduo selecionado para a geração seguinte 
+	// 			nova_geracao.push_back(prole);
+	// 		}
 			
-		}
+	// 	}
 	
-	 limparPopulacao(individuos);
+	//  limparPopulacao(individuos);
 	 
-	 geracoes += 1; 
-	 individuos = nova_geracao;
+	//  geracoes += 1; 
+	//  individuos = nova_geracao;
  }
 
 
@@ -282,13 +288,18 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-
-	while (geracoes < GEN_MAX)
-	{
-		PG(programas);
-	}
+	arvoregenes prole_1; 
+	arvoregenes prole_2;
+	crossover(programas[0], programas[1], &prole_1, &prole_2);
 	
-	cout << "Problemas Resolvidos: " << problema_resolvido;
+
+
+	// while (geracoes < GEN_MAX)
+	// {
+	// 	PG(programas);
+	// }
+	
+	// cout << "Problemas Resolvidos: " << problema_resolvido;
 	
 	return 0;
 }

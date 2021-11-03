@@ -1,0 +1,72 @@
+==============================================================================================================================
+
+#define MAX_L 5
+#define MAX_C 3
+#define MAX_DEMANDA 3
+
+    //Estrutura das demandas 
+    struct demanda
+    {
+        float tamanho;
+        int qnt;
+    };
+    
+    //tamanho da peça 
+    static float peca = 10;
+    //quantidade no estoque 
+    static int qnt = 7;
+
+
+    //VARIÁVEIS DE PROBLEMAS 
+    //Quantidade de demandas 
+    static demanda d[MAX_DEMANDA] = {{5, 5}, {2.5, 10}, {1.5, 8}};
+
+    //Quantidade de programações de cortes 
+    static float padroes[MAX_L][MAX_C] = {
+    //   5  2.5  1.5
+        {2,  0,  0}, //0
+        {0,  4,  0}, //0
+        {0,  0,  6}, //1
+        {1,  2,  0}, //0
+        {0,  3,  1}, //1
+    };
+
+==============================================================================================================================
+
+#define MAX_L 10
+#define MAX_C 13
+#define MAX_DEMANDA 13
+
+    //Estrutura das demandas 
+    struct demanda
+    {
+        float tamanho;
+        int qnt;
+    };
+    
+    //tamanho da peça 
+    static float peca = 5600;
+    //quantidade no estoque 
+    static int qnt = 73;
+
+
+    //VARIÁVEIS DE PROBLEMAS 
+    //Quantidade de demandas 
+    static demanda d[MAX_DEMANDA] = {{1380, 22}, {1520, 25}, {1560, 12}, {1710, 14}, {1820, 18}, {1880, 18}, {1930, 20}, {2000, 10}, {2050, 12}, {2100, 14}, {2140, 16}, {2150, 18}, {2200, 20}};
+
+    //Quantidade de programações de cortes 
+    static float padroes[MAX_L][MAX_C] = {
+    //   1380  1520  1560  1710  1820  1880  1930  2000  2050  2100  2140  2150  2200
+        {0,    0,    0,     0,    3,    0,    0,    0,    0,    0,    0,    0,    0}, //0
+        {1,    0,    0,     0,    0,    0,    1,    0,    0,    0,    0,    1,    0}, //0
+        {1,    0,    0,     0,    0,    0,    0,    0,    0,    2,    0,    0,    0}, //0
+        {1,    0,    0,     0,    0,    0,    0,    0,    0,    2,    0,    0,    0}, //0
+        {0,    0,    1,     0,    1,    0,    0,    0,    0,    0,    0,    0,    1}, //0
+        {0,    1,    0,     0,    0,    1,    0,    0,    0,    0,    0,    0,    1}, //0
+        {0,    1,    0,     0,    0,    0,    1,    0,    0,    0,    0,    1,    0}, //0
+        {0,    1,    0,     0,    0,    0,    1,    0,    0,    0,    1,    0,    0}, //0
+        {0,    0,    0,     1,    0,    1,    0,    1,    0,    0,    0,    0,    0}, //0
+        {0,    0,    0,     2,    0,    0,    0,    0,    0,    0,    0,    1,    0}, //0
+        
+        
+    };
