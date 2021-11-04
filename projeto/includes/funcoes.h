@@ -10,10 +10,16 @@
 	    bool binario; 
     };
 
+#define LOGIC_LINE 2
+
 #define FUNC_LINE 5
 #define FUNC_COL 4
 
 #define TERM_LINE 2
+    const char logic_set[LOGIC_LINE][3] = {
+        ">=",
+        "<=",
+    };
 
     const char funcset[FUNC_LINE][FUNC_COL] = {
         "+", 

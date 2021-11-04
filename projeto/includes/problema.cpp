@@ -37,6 +37,16 @@ float * desperdicio(float p[MAX_L][MAX_C], demanda d[MAX_DEMANDA]){
     return desp; 
 }
 
+float tamanhoPorPadrao(int padraoi){
+    float tam = 0; 
+
+    //percorre pela matriz de padrões
+    for(int j = 0; j<MAX_C; j++){
+        tam += padroes[padraoi][j] * d[j].tamanho; 
+    }
+
+    return tam; 
+}
 
 float cortePorPadrao(float padroes[MAX_L][MAX_C], int demanda, int cortes[MAX_L]){
     float total = 0; 

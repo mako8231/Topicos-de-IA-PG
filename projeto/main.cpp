@@ -30,7 +30,7 @@ arvoregenes melhor_individuo;
 
 //gerações
 int geracoes = 0;
-fout fitness(arvoregenes individuo);
+void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w);
 void limparPopulacao(vector<arvoregenes>& pop);
 
 void printarResultado(fout resultado){
@@ -118,9 +118,12 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes * prole_1, arvorege
 	herdarGenes(&cp_1, heranca_2);
 	herdarGenes(&cp_2, heranca_1);
 	
+	ordem(cp_1);
+
 	//libere a memória 
 	apagaNodo(&heranca_1);
 	apagaNodo(&heranca_2);
+
 
 	*prole_1 = genes_pai; *prole_2 = genes_mae;
 
@@ -220,48 +223,41 @@ void gerarCortes(arvoregenes individuo, int *cortes){
 
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
-fout fitness(arvoregenes individuo){
+//fitness(programa, nota, solução, desperdício) 
+void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w){
 
 	//variáveis de decisão
+	nota = 0; 
 	int cortes[MAX_L]; 
 	float cortes_padrao[MAX_DEMANDA];
-
-	//medida de validação
-	fout medida = {0,0,0,false}; 
-	//calcular os disperdícios 
+	//calcular os desperdícios 
 	float * desp;
 	//desp(i) sendo i itens de cada padrão de corte
 	desp = desperdicio(padroes, d);
 	
-	//gerar as variáveis de decisão com base na demanda e largura da peça 
-	gerarCortes(individuo, cortes);
-	
-	//armazena os cortes padrões para cada demanda 
-	
-	for (int i = 0; i<MAX_DEMANDA; i++){
-		cortes_padrao[i] = cortePorPadrao(padroes, i, cortes);
-		
-		//Primeira restrição, ser um inteiro positivo 
-		if (cortes[i] > 0){
-			medida.solucao_valida = true; 
+	//para cada padrão de corte testar o programa 
+	for (int j = 0; j<MAX_L; j++){	
+		int temp_cortes = 0;	
+		for (int i = 0; i<MAX_C; i++){ 
+			//peças cortadas para cada padrão de corte 
+			float peca_tam = tamanhoPorPadrao(i);
+			//testa o programa com base no tamanho da peça e da demanda 
+			saida out = f.eval(individuo, peca_tam, (d[j].qnt * d[j].tamanho));
+			//se a equação for verdadeira
+			if (out.binario){
+				temp_cortes += 1; 
+				cortes[j] = temp_cortes;
+			} else {
+				cortes[j] = temp_cortes;
+			}
 		}
-		//Segunda restrição, atender a demanda
-		if (cortes_padrao[i] >= (d[i].qnt)){
-			medida.demandas_atendidas += 1; 
-		}
-		//Terceira restrição, não ultrapassar o estoque 
-		if (cortes_padrao[i] <= (d[i].qnt) + qnt){
-			medida.capacidades_mantidas += 1; 
-		}
-		
 	}
 
-	//calcular o total de desperdicio
-	
-	medida.desperdicio = minimize(desp, cortes);
-	free(desp);
-
-	return medida; 
+	// //[DEBUG] printar a solução gerada
+	// for (int i = 0; i<MAX_L; i++){
+	// 	cout << cortes[i] << "\n";
+	// }
+		
 }
 
 
@@ -272,7 +268,10 @@ vector<arvoregenes> populacaoInicial(int q, int maxlv){
 	vector<arvoregenes> individuos; 
 	for (int i = 0; i<q; i++){
 		//individuos[i] = gerarPopulacao(geraNum(maxlv), individuos[i]);
-		arvoregenes programa = gerarPopulacao(geraNum(1, maxlv), programa);
+		//a raiz consistirá nos operadores de >= e <= 
+		arvoregenes programa = criaArvore((char *)logic_set[geraNum(0, LOGIC_LINE - 1)]); 
+		programa->filhoesquerdo = gerarPopulacao(geraNum(1, maxlv), programa->filhoesquerdo);
+		programa->filhodireito = gerarPopulacao(geraNum(1, maxlv), programa->filhodireito);
 		individuos.push_back(programa);
 	}
 	return individuos;
@@ -293,10 +292,11 @@ void limparPopulacao(vector<arvoregenes>& pop){
 int main(){
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	arvoregenes prole_1; 
-	arvoregenes prole_2;
-	crossover(programas[0], programas[1], &prole_1, &prole_2);
+	int nota;
+	int * solucao;
+	float desperdicio; 
 	
+	fitness(programas[0], &nota, &solucao, &desperdicio);
 
 
 	// while (geracoes < GEN_MAX)
