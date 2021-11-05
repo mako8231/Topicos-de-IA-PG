@@ -15,29 +15,14 @@ using namespace std;
 Funcoes f;
 int prof = DEPTH_I; 
 
-struct fout 
-{
-	float desperdicio; 
-	int demandas_atendidas;
-	int capacidades_mantidas;
-	bool solucao_valida;   
-};
-
-fout melhor_resultado = {1000,0,0,true};
-int problema_resolvido = 0; 
-
 arvoregenes melhor_individuo;
 
 //gerações
 int geracoes = 0;
+
+//funções prototipadas
 void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w);
 void limparPopulacao(vector<arvoregenes>& pop);
-
-void printarResultado(fout resultado){
-	cout << "Capacidades mantidas: " << resultado.capacidades_mantidas << "\n";
-	cout << "Demandas atendidas: " << resultado.demandas_atendidas << "\n";
-	cout << "Desperdício: " << resultado.desperdicio << "\n";
-}
 
 
 //Reproduz os genes da população seguinte 
@@ -129,84 +114,9 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes * prole_1, arvorege
 
 }
 
-void atualizarParametros(fout novos_parametros, fout *parametros){
-	if (novos_parametros.capacidades_mantidas > (*parametros).capacidades_mantidas){
-		(*parametros).capacidades_mantidas = novos_parametros.capacidades_mantidas;
-	} 
-
-	if (novos_parametros.demandas_atendidas > (*parametros).demandas_atendidas){
-		(*parametros).demandas_atendidas = novos_parametros.demandas_atendidas;
-	} 
-
-	if (novos_parametros.desperdicio < (*parametros).desperdicio){
-		(*parametros).desperdicio = novos_parametros.desperdicio;
-	} 
-}
-
-bool solucionado(fout parametros){
-	return (parametros.capacidades_mantidas >= MAX_DEMANDA && parametros.demandas_atendidas >= MAX_DEMANDA && parametros.desperdicio >= 0);
-}
 
 void PG(vector<arvoregenes>& individuos){
-	//  //Parâmetros de GP
-	//  vector<arvoregenes> nova_geracao; 
-	//  arvoregenes prole; 
-
-	//  float mutacao_prob = 0.04;
-	//  float crossover_prob = 0.7;
-	//  float reproducao_prob = 1 - (crossover_prob + mutacao_prob);
-
-	//  float rolls = randomFloat(0, 1);
-
-	//  for (int i=0; i<individuos.size(); i++){
-
-	// 	fout resultado = fitness(individuos[i]);
-		
-
-	// 	if(resultado.capacidades_mantidas >= melhor_resultado.capacidades_mantidas || resultado.demandas_atendidas >= melhor_resultado.demandas_atendidas || (resultado.desperdicio <= melhor_resultado.desperdicio && resultado.desperdicio >= 0)){
-	// 		atualizarParametros(resultado, &melhor_resultado);
-	// 		if (solucionado(resultado)){
-	// 			problema_resolvido += 1; 
-	// 			//melhor_individuo = copiaArvore(individuos[i]);
-	// 		}
-	// 		//se o indivíduo selecionado parcialmente resolve o problema (ou totalmente), reproduza-o para a geração seguinte 
-	// 		nova_geracao.push_back(copiaArvore(individuos[i]));	
-	// 		}
-			
-	// 	}
-
-
-	// 	if (nova_geracao.size() > 0 && nova_geracao.size() < POPMAX){
-
-	// 		//começar a procriação 
-	// 		//rolls é a probabilidade dos eventos de procriação acontecer
-	// 		//rolls <= 0.0x = mutação
-	// 		//rolls <= 0.x = crossover 
-	// 		//rolls <= 1 - (mutação + crossover) = reprodução normal
-	// 		while(nova_geracao.size() < POPMAX){
-	// 			int pai_indice = geraNum(0, (nova_geracao.size() -1));
-	// 			int mae_indice = geraNum(0, (nova_geracao.size() -1)); 
-
-	// 			if (rolls <= mutacao_prob){
-	// 				prole = mutacao(nova_geracao[pai_indice]);
-	// 			} else if(rolls <= crossover_prob) {
-	// 				//aqui deve ser verificado se há outros indivíduos dentro do vetor da nova geração
-	// 				//caso contrário, apenas reproduza o indivíduo para a geração seguinte
-	// 				prole = crossover(nova_geracao[pai_indice], nova_geracao[mae_indice]);
-	// 			} else {
-	// 				//caso nenhuma dessas probabilidades acontecer, reproduza o indivíduo
-	// 				prole = copiaArvore(nova_geracao[pai_indice]);
-	// 			}
-	// 			//insira o indivíduo selecionado para a geração seguinte 
-	// 			nova_geracao.push_back(prole);
-	// 		}
-			
-	// 	}
 	
-	//  limparPopulacao(individuos);
-	 
-	//  geracoes += 1; 
-	//  individuos = nova_geracao;
  }
 
 
@@ -237,6 +147,8 @@ void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w){
 	
 	//para cada padrão de corte testar o programa 
 	for (int j = 0; j<MAX_L; j++){	
+		//essa variável é criada por conta do C não dar um valor 0 para um vetor inicializado
+		//assim o resultado não mostra algum número gigante sem lógica alguma ao invés de um simples zero
 		int temp_cortes = 0;	
 		for (int i = 0; i<MAX_C; i++){ 
 			//peças cortadas para cada padrão de corte 
@@ -252,6 +164,8 @@ void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w){
 			}
 		}
 	}
+
+
 
 	// //[DEBUG] printar a solução gerada
 	// for (int i = 0; i<MAX_L; i++){

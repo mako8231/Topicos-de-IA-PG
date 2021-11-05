@@ -17,6 +17,9 @@
 
     7.1 Ajustei os parâmetros da seleção natural, o que permite tolerar mais indivíduos, segundo os testes, alguns se aproximam da solução do problema, mas não conseguem resolver inteiramente, talvez seja mesmo necessário ajustar o crossover e mutação que possam melhorar o resultado ✔️
 
-8 - Caso os programas finalmente evoluam de maneira que sejam capazes de resolver o problema, testar várias configurações de problemas diferentes para verificar se a inteligência artificial consegue resolver qualquer tipo de problema. 
-    
-    8.1 Reformular a seleção natural afim de manter a população máxima 
+8 - Caso os programas finalmente evoluam de maneira que sejam capazes de resolver o problema, testar várias configurações de problemas diferentes para verificar se a inteligência artificial consegue resolver qualquer tipo de problema.  
+
+    8.1 Reprogramar o fitness com o novo método de bio-heurística 
+
+    8.2 Alterar o problema.h e problema.cpp, de modo que eles coletem qualquer instância de problema, assim, viabilizando o uso da PG
+
