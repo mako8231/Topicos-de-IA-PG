@@ -176,10 +176,12 @@ void fitness(arvoregenes individuo, int *nota, int **solucao, float *fitness_des
 		*fitness_desperdicio += (desp_solucao / total_desperdicios);
 		
 		// //[DEBUG] printar a solução gerada
-		// for (int i = 0; i < problema.padroes_corte.size(); i++)
-		// {
-		// 	cout << cortes[i] << "\n";
-		// }
+		 for (int i = 0; i < problema.padroes_corte.size(); i++)
+		 {
+		 	cout << cortes[i] << "\n";
+		 }
+
+		//garbage colector 
 		free(cortes);
 		free(desp);
 	}

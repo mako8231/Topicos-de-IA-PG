@@ -30,10 +30,10 @@ class Instancia {
         {1,  2,  0}, //0
         {0,  3,  1}, //1
         };**/
-        vector<float*> padroes_corte; 
+        vector<int*> padroes_corte; 
     
         //métodos
-        void adicionarPadraoCorte(float programacao[]);
+        void adicionarPadraoCorte(int programacao[]);
         void adicionarDemanda(demanda d); 
         void printarPadroesCorte();
         void printarDemandas();
@@ -49,6 +49,6 @@ class Instancia {
 };
 
 vector<Instancia> trainingSet();
-
+void gerarPadraoCorte(Instancia& i);
 
 #endif

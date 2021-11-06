@@ -16,9 +16,9 @@ void Instancia::adicionarDemanda(demanda d){
     demandas.push_back(d);
 }
 
-void Instancia::adicionarPadraoCorte(float programacao[]){
+void Instancia::adicionarPadraoCorte(int programacao[]){
     //adicione o padrão de corte ao vetor
-    float * p = programacao; 
+    int * p = programacao; 
     padroes_corte.push_back(p);
 }
 
@@ -106,11 +106,11 @@ vector<Instancia> trainingSet(){
 	p1.adicionarDemanda({1.5, 8});
 
     //adiciona os padrões de corte
-	float padrao1[] = {2, 0, 0};
-	float padrao2[] = {0, 4, 0};
-	float padrao3[] = {1, 2, 0};
-	float padrao4[] = {0, 3, 1};
-	float padrao5[] = {0, 0, 6};
+	int padrao1[] = {2, 0, 0};
+	int padrao2[] = {0, 4, 0};
+	int padrao3[] = {1, 2, 0};
+	int padrao4[] = {0, 3, 1};
+	int padrao5[] = {0, 0, 6};
 
 	p1.adicionarPadraoCorte(padrao1);
 	p1.adicionarPadraoCorte(padrao2);
@@ -122,8 +122,90 @@ vector<Instancia> trainingSet(){
     problemas.push_back(p1);
 
     //adicionando o segundo problema
+    Instancia p2(10000, 57);
+
+    p2.adicionarDemanda({4964, 3});
+    p2.adicionarDemanda({4950, 1});
+    p2.adicionarDemanda({4826, 1});
+    p2.adicionarDemanda({4816, 1});
+    p2.adicionarDemanda({4808, 1});
+    p2.adicionarDemanda({4682, 1});
+    p2.adicionarDemanda({4663, 4});
+    p2.adicionarDemanda({4631, 1});
+    p2.adicionarDemanda({4451, 1});
+    p2.adicionarDemanda({4387, 2});
+    p2.adicionarDemanda({4233, 1});
+    p2.adicionarDemanda({4127, 1});
+    p2.adicionarDemanda({3992, 2});
+    p2.adicionarDemanda({3968, 1});
+    p2.adicionarDemanda({3858, 1});
+    p2.adicionarDemanda({3698, 2});
+    p2.adicionarDemanda({3672, 4});
+    p2.adicionarDemanda({3565, 1});
+    p2.adicionarDemanda({3387, 3});
+    p2.adicionarDemanda({3336, 3});
+    p2.adicionarDemanda({3309, 1});
+    p2.adicionarDemanda({3118, 3});
+    p2.adicionarDemanda({3078, 4});
+    p2.adicionarDemanda({2988, 1});
+    p2.adicionarDemanda({2870, 1});
+    p2.adicionarDemanda({2862, 2});
+    p2.adicionarDemanda({2847, 2});
+    p2.adicionarDemanda({2735, 2});
+    p2.adicionarDemanda({2716, 3}); 
+    p2.adicionarDemanda({2652, 1});
+    p2.adicionarDemanda({2631, 3});
+    p2.adicionarDemanda({2553, 2});
+    p2.adicionarDemanda({2496, 3});
+    p2.adicionarDemanda({2406, 1});
+    p2.adicionarDemanda({2125, 2});
+    p2.adicionarDemanda({2017, 1});
+    p2.adicionarDemanda({1939, 3});
+    p2.adicionarDemanda({1848, 4});
+    p2.adicionarDemanda({1832, 1});
+    p2.adicionarDemanda({1672, 2});
+    p2.adicionarDemanda({1624, 1});
+    p2.adicionarDemanda({1593, 1});
+    p2.adicionarDemanda({1436, 4});
+    p2.adicionarDemanda({1225, 2});
+    p2.adicionarDemanda({1212, 3});
+    p2.adicionarDemanda({1060, 4});
+    p2.adicionarDemanda({943, 2});
+    p2.adicionarDemanda({763, 1});
+    p2.adicionarDemanda({733, 4});
+    p2.adicionarDemanda({583, 1});
+    p2.adicionarDemanda({476, 1});
+    p2.adicionarDemanda({462, 2});
+    p2.adicionarDemanda({278, 3});
+    p2.adicionarDemanda({246, 1});
+    p2.adicionarDemanda({80, 1});
+    p2.adicionarDemanda({74, 2});
+    p2.adicionarDemanda({40, 2});
+
+    //gerar padrões de cortes homogêneos
+    gerarPadraoCorte(p2);
+
+    problemas.push_back(p2);
 
     //retorna todos os problemas 
     return problemas;
 
+}
+
+//gerar um padrão de corte homogêneo 
+void gerarPadraoCorte(Instancia& i){
+    for (int item = 0; item <= i.demandas.size(); item++){
+        //alocar o padrão de corte baseado no tamanho das demandas
+        int * padrao;
+        padrao = (int *) malloc(i.demandas.size() * sizeof(int));
+        for (int j=0; j<=i.demandas.size(); j++){
+            padrao[j] = 0;
+            //inserir os valores homogêneos
+            if(j == item){
+                //adiciona um valor fixo correspondente a demanda atual
+                padrao[j] = 1; 
+            }
+        }
+        i.padroes_corte.push_back(padrao);
+    }
 }
