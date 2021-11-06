@@ -117,11 +117,22 @@ saida Funcoes::eval(arvoregenes programa, float l, float d){
     else if (strcmp(programa->chave, "SIN") == 0)
         s.numerico = sen(valor_e.numerico, valor_d.numerico);
 
-    else if (strcmp(programa->chave, ">=") == 0)
+    else if (strcmp(programa->chave, ">=") == 0) {
         s.binario = maiorique(valor_e.numerico, valor_d.numerico);
-
-    else if (strcmp(programa->chave, "<=") == 0)
+        if (s.binario){
+            s.numerico = valor_d.numerico;
+        } else {
+            s.numerico = valor_e.numerico;
+        }
+    }
+    else if (strcmp(programa->chave, "<=") == 0) {
         s.binario = menorique(valor_e.numerico, valor_d.numerico);
+        if (s.binario){
+            s.numerico = valor_e.numerico;
+        } else {
+            s.numerico = valor_d.numerico;
+        }
+    }
 
     else if (strcmp(programa->chave, "AND") == 0)
         s.binario = AND(valor_e.binario, valor_d.binario);

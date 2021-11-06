@@ -1,6 +1,6 @@
 #include "includes/arvore.h"
-#include "includes/problema.h"
 #include "includes/funcoes.h"
+#include "includes/instancia.h"
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
@@ -15,13 +15,11 @@ using namespace std;
 Funcoes f;
 int prof = DEPTH_I; 
 
-arvoregenes melhor_individuo;
-
 //gerações
 int geracoes = 0;
 
 //funções prototipadas
-void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w);
+void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w, Instancia problema);
 void limparPopulacao(vector<arvoregenes>& pop);
 
 
@@ -120,57 +118,58 @@ void PG(vector<arvoregenes>& individuos){
  }
 
 
-void gerarCortes(arvoregenes individuo, int *cortes){
-
-	for (int i = 0; i<MAX_L; i++){
-		for (int j=0; j<MAX_C; j++){
-			saida s = f.eval(individuo, peca, padroes[i][j] * d[j].tamanho);
-			cortes[i] = (int)s.numerico; 
-		}	
-			
-	}
-}
-
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 //fitness(programa, nota, solução, desperdício) 
-void fitness(arvoregenes individuo, int * nota, int ** solucao, float * w){
+void fitness(arvoregenes individuo, int * nota, int ** solucao, float * fitness_desperdicio, Instancia problema){
 
 	//variáveis de decisão
 	nota = 0; 
-	int cortes[MAX_L]; 
-	float cortes_padrao[MAX_DEMANDA];
+	//criar o vetor de cortes 
+	int * cortes;
+	cortes = (int *)malloc(problema.padroes_corte.size() * sizeof(int)); 
+
 	//calcular os desperdícios 
-	float * desp;
+	float * desp;	
+	float total_desperdicios = 0; 
 	//desp(i) sendo i itens de cada padrão de corte
-	desp = desperdicio(padroes, d);
+	desp = problema.desperdicio(&total_desperdicios);
 	
 	//para cada padrão de corte testar o programa 
-	for (int j = 0; j<MAX_L; j++){	
+	for (int j = 0; j<problema.padroes_corte.size(); j++){	
 		//essa variável é criada por conta do C não dar um valor 0 para um vetor inicializado
 		//assim o resultado não mostra algum número gigante sem lógica alguma ao invés de um simples zero
 		int temp_cortes = 0;	
-		for (int i = 0; i<MAX_C; i++){ 
+		for (int i = 0; i<problema.demandas.size(); i++){ 
 			//peças cortadas para cada padrão de corte 
-			float peca_tam = tamanhoPorPadrao(i);
+			float peca_tam = problema.tamanhoPorPadrao(i);
 			//testa o programa com base no tamanho da peça e da demanda 
-			saida out = f.eval(individuo, peca_tam, (d[j].qnt * d[j].tamanho));
+			saida out = f.eval(individuo, peca_tam, (problema.demandas[j].qnt * problema.demandas[j].tamanho));
 			//se a equação for verdadeira
+			//aloca como se fosse um corte para esse padrão
 			if (out.binario){
-				temp_cortes += 1; 
+				temp_cortes += (int) out.numerico; 
 				cortes[j] = temp_cortes;
+			//caso contrário, não altera 
 			} else {
 				cortes[j] = temp_cortes;
 			}
 		}
 	}
 
+	//pega o total de desperdício
+	float desp_solucao = problema.minimize(desp, cortes);
+	//cout << total_desperdicios;
+	//isso contudo, deve ser executado em várias instâncias ou seja, será acumulado valores proporcionais
+	//o objetivo é minimizar os desperdícios, então a meta é a porcentagem desses desperdícios sempre serem menores
+	*fitness_desperdicio += (desp_solucao/total_desperdicios);
+
 
 
 	// //[DEBUG] printar a solução gerada
-	// for (int i = 0; i<MAX_L; i++){
-	// 	cout << cortes[i] << "\n";
-	// }
+	   for (int i = 0; i<problema.padroes_corte.size(); i++){
+	   	cout << cortes[i] << "\n";
+	   }
 		
 }
 
@@ -210,8 +209,34 @@ int main(){
 	int * solucao;
 	float desperdicio; 
 	
-	fitness(programas[0], &nota, &solucao, &desperdicio);
+	
+	Instancia i(10, 7);
+	
+	i.adicionarDemanda({5, 5});
+	i.adicionarDemanda({2.5, 10});
+	i.adicionarDemanda({1.5, 8});
 
+	float padrao1[] = {2, 0, 0};
+	float padrao2[] = {0, 4, 0};
+	float padrao3[] = {1, 2, 0};
+	float padrao4[] = {0, 3, 1};
+	float padrao5[] = {0, 0, 6};
+
+	i.adicionarPadraoCorte(padrao1);
+	i.adicionarPadraoCorte(padrao2);
+	i.adicionarPadraoCorte(padrao3);
+	i.adicionarPadraoCorte(padrao4);
+	i.adicionarPadraoCorte(padrao5);
+
+	float total_desp = 0; 
+	float * desp = i.desperdicio(&total_desp);
+
+	fitness(programas[0], &nota, &solucao, &desperdicio, i);
+
+	//i.printarPadroesCorte();
+	cout << "desperdicio total" << total_desp << "\n";
+	
+	
 
 	// while (geracoes < GEN_MAX)
 	// {
