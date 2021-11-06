@@ -48,5 +48,7 @@ class Instancia {
 
 };
 
+vector<Instancia> trainingSet();
+
 
 #endif

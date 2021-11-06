@@ -91,3 +91,39 @@ float Instancia::minimize(float *desperdicio, int *x){
     //retorna o desperdício total gerado
     return total; 
 }
+
+//cria uma lista de instâncias de problemas 
+vector<Instancia> trainingSet(){
+    //cria a lista de problemas
+    vector<Instancia> problemas; 
+
+    //adicionando o primeiro problema 
+    Instancia p1(10, 7);
+	
+    //adiciona as demandas
+	p1.adicionarDemanda({5, 5});
+	p1.adicionarDemanda({2.5, 10});
+	p1.adicionarDemanda({1.5, 8});
+
+    //adiciona os padrões de corte
+	float padrao1[] = {2, 0, 0};
+	float padrao2[] = {0, 4, 0};
+	float padrao3[] = {1, 2, 0};
+	float padrao4[] = {0, 3, 1};
+	float padrao5[] = {0, 0, 6};
+
+	p1.adicionarPadraoCorte(padrao1);
+	p1.adicionarPadraoCorte(padrao2);
+	p1.adicionarPadraoCorte(padrao3);
+	p1.adicionarPadraoCorte(padrao4);
+	p1.adicionarPadraoCorte(padrao5);
+
+    //põe o problema no vetor 
+    problemas.push_back(p1);
+
+    //adicionando o segundo problema
+
+    //retorna todos os problemas 
+    return problemas;
+
+}
