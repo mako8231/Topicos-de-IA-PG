@@ -9,17 +9,17 @@ using namespace std;
 //a ideia é armazenar várias instâncias que serão testadas para cada indivíduo
 struct demanda
 {
-    float tamanho;
-    float qnt; 
+    double tamanho;
+    double qnt; 
 };
 
 class Instancia {
     public: 
         //variaveis de problema
         vector<demanda> demandas;  
-        float largura_peca; 
+        double largura_peca; 
         //estoque máximo de peças 
-        float estmax; 
+        double estmax; 
         //vetor de vetores (matrizes) correspondente ao padrão de cortes 
         //ex: 
         /**   
@@ -38,12 +38,13 @@ class Instancia {
         void printarPadroesCorte();
         void printarDemandas();
         //esses são copias dos métodos do antigo "problema.h"
-        float tamanhoPorPadrao(int padraoi);
-        float * desperdicio(float *total);
-        float minimize(float *desperdicio, int *x);
-
+        double tamanhoPorPadrao(int padraoi);
+        double * desperdicio(double *total);
+        int * inicializarCortes();
+        double minimize(double *desperdicio, int *x);
+        
         //construtor
-        Instancia(float largura, int est);
+        Instancia(double largura, int est);
         ~Instancia();
 
 };

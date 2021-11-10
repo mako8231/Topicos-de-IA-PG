@@ -19,45 +19,45 @@ Funcoes::Funcoes(){
 
 
 //operação de soma 
-float Funcoes::soma(float x1, float x2){
+double Funcoes::soma(double x1, double x2){
     return abs(x1 + x2);
 }
 
 //operação de subtração
-float Funcoes::subtracao(float x1, float x2){
+double Funcoes::subtracao(double x1, double x2){
     return abs(x1 - x2);
 }
 
 //operação de multiplicação
-float Funcoes::multiplicacao(float x1, float x2){
+double Funcoes::multiplicacao(double x1, double x2){
     return abs(x1 * x2);
 }
 
 //operação de divisão
-float Funcoes::divisao(float x1, float x2){
+double Funcoes::divisao(double x1, double x2){
     if (x2 == 0)
         return abs(x1);
     return abs(x1/x2);
 }
 
 //operação de resto
-float Funcoes::resto(float x1, float x2){
+double Funcoes::resto(double x1, double x2){
     if (x2 == 0)
         return x1;
     return (int)x1%(int)x2;
 }
 
-float Funcoes::sen(float x1, float x2){ 
+double Funcoes::sen(double x1, double x2){ 
     return abs(x1 * sin(x2));
 }
 
 //verifica se x1 é menor que x2 
-bool Funcoes::menorique(float x1, float x2){
+bool Funcoes::menorique(double x1, double x2){
     return x1 <= x2;
 }
 
 //verifica se x1 é maior que x2 
-bool Funcoes::maiorique(float x1, float x2){
+bool Funcoes::maiorique(double x1, double x2){
     return x1 >= x2;
 }
 
@@ -72,7 +72,7 @@ bool Funcoes::OR(bool x1, bool x2){
 }
 
 //Carrega e valida as expressões na árvore 
-saida Funcoes::eval(arvoregenes programa, float l, float d){
+saida Funcoes::eval(arvoregenes programa, double l, double d){
     saida s; 
     s.binario = false; 
     s.numerico = 0;
@@ -163,7 +163,7 @@ int geraNum(int min, int max){
 }
 
 //gera um número real aleatório
-float randomFloat(float min, float max){
+double randomdouble(double min, double max){
 	std::random_device rd; 
 	std::default_random_engine eng(rd());
 	std::uniform_real_distribution<> distr(min, max);

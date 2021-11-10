@@ -7,7 +7,7 @@
 #include <vector>
 
 #define POPMAX 1000
-#define DEPTH_I 10
+#define DEPTH_I 4
 #define GEN_MAX 100
 
 using namespace std;
@@ -18,7 +18,7 @@ int prof = DEPTH_I;
 int geracoes = 0;
 
 //funções prototipadas
-void fitness(arvoregenes individuo, float *nota, float *fitness_demanda, float *fitness_desp, vector<Instancia> problemas);
+void fitness(arvoregenes individuo, double *nota, double *fitness_demanda, double *fitness_desp, vector<Instancia> problemas);
 void limparPopulacao(vector<arvoregenes> &pop);
 
 //Reproduz os genes da população seguinte
@@ -105,8 +105,6 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes *prole_1, arvoregen
 	herdarGenes(&cp_1, heranca_2);
 	herdarGenes(&cp_2, heranca_1);
 
-	ordem(cp_1);
-
 	//libere a memória
 	apagaNodo(&heranca_1);
 	apagaNodo(&heranca_2);
@@ -115,31 +113,83 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes *prole_1, arvoregen
 	*prole_2 = genes_mae;
 }
 
-void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas)
+void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * melhor_fo)
 {
 	//variaveis de fitness
-	float fitness_demanda = 0; 
-	float fitness_desp = 0;
-	float nota = 0; 
+	double fitness_demanda = 0; 
+	double fitness_desp = 0;
+	double nota = 0; 
 
-	//variaveis de controle 
-	float melhor_demanda = 0; 
-	float melhor_desp = 9999;
-	float melhor_nota = 0; 
+	//novo vetor de geração
+	vector<arvoregenes> nova_geracao; 
+
+	//melhor fo
+
+	double prob_crossover = 0.4;
+	double prob_mutacao = 0.1; 
+
+	double val = randomdouble(0, 1); 
 
 	//itera pelo vetor de indivíduos 
 	for (int i = 0; i<individuos.size(); i++){
 		//avalia o indivíduo
 		fitness(individuos[i], &nota, &fitness_demanda, &fitness_desp, problemas);
 		
+		//fo é a nota final do fitness 
+		double fo = fitness_demanda - fitness_desp; 
+
+		//se é um indivíduo bom
+		if (*melhor_fo < fo){
+			*melhor_fo = fo; 
+			//seleciona o indivíduo e copia para a nova geração
+			nova_geracao.push_back(copiaArvore(individuos[i]));
+			ordem(individuos[i]);
+			cout << "\n";
+		}
+		
 	}
+
+	for (int i = 0; i<individuos.size(); i++){
+		//aplicar as probabilidades definidas
+		if (nova_geracao.size() < POPMAX){
+			if (val <= prob_crossover){
+				//crossover com o melhor indivíduo e um aleatório da geração atual
+				arvoregenes prole1, prole2; 
+				//se houver um indivíduo bom selecionado:
+				if (nova_geracao.size() > 0){
+					crossover(nova_geracao[geraNum(0, (nova_geracao.size() -1))], individuos[i], &prole1, &prole2);
+				} else {
+					//cruza com um outro indivíduo aleatorio
+					crossover(individuos[i], individuos[geraNum(0, individuos.size()- 1)], &prole1, &prole2);
+				}
+				//com a procriação feita, joga no vetor da nova geração
+				nova_geracao.push_back(prole1);
+				nova_geracao.push_back(prole2);
+			} else if (val <= prob_mutacao){
+				//mutacao
+				arvoregenes mutante = mutacao(individuos[i]);
+				nova_geracao.push_back(mutante);
+			} else {
+				//reproducao
+				arvoregenes prole = copiaArvore(individuos[i]);
+				nova_geracao.push_back(prole);
+		  	}
+		} else {
+			break;
+		}
+	}
+	
+	//limpa a geração original
+	limparPopulacao(individuos);
+	individuos = nova_geracao;
+	
 
 }
 
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 //fitness(programa, nota, solução, desperdício)
-void fitness(arvoregenes individuo, float *nota, float *fitness_demanda, float *fitness_desp, vector<Instancia> problemas)
+void fitness(arvoregenes individuo, double *nota, double *fitness_demanda, double *fitness_desp, vector<Instancia> problemas)
 {
 
 	//testa o indivíduo para todas as instâncias
@@ -150,71 +200,72 @@ void fitness(arvoregenes individuo, float *nota, float *fitness_demanda, float *
 		int *cortes;
 		//variáveis de demanda
 		//demandas totais (em quantidade)
-		float max_demandas = problema.demandas.size();
+		double max_demandas = problema.demandas.size();
 
 		//demandas atendidas
-		float demandas_atendidas = 0; 
+		double demandas_atendidas = 0; 
 		//criar o vetor de cortes
-		cortes = (int *)malloc(problema.padroes_corte.size() * sizeof(int));
+		cortes = problema.inicializarCortes();
 
 		//calcular os desperdícios
-		float *desp;
-		float total_desperdicios = 0;
+		double *desp;
+		double total_desperdicios = 0;
 		//desp(i) sendo i itens de cada padrão de corte
 		desp = problema.desperdicio(&total_desperdicios);
+
+		//variaveis de notas
+		double media_demanda = 0;
+		double media_cortes = 0;
 
 		//para cada padrão de corte testar o programa
 		for (int j = 0; j < problema.padroes_corte.size(); j++)
 		{
 			//essa variável é criada por conta do C não dar um valor 0 para um vetor inicializado
 			//assim o resultado não mostra algum número gigante sem lógica alguma ao invés de um simples zero
-			int temp_cortes = 0;
 			for (int i = 0; i < problema.demandas.size(); i++)
 			{
 				//peças cortadas para cada padrão de corte
-				float peca_tam = problema.tamanhoPorPadrao(i);
+				double peca_tam = problema.tamanhoPorPadrao(j);
 				//testa o programa com base no tamanho da peça e da demanda
-				saida out = f.eval(individuo, peca_tam, (problema.demandas[j].tamanho));
+				saida out = f.eval(individuo, peca_tam, (problema.demandas[i].tamanho));
 				//se a equação for verdadeira
 				//aloca como se fosse um corte para esse padrão
 				if (out.binario)
-				{
-					temp_cortes += (int)out.numerico;
-					cortes[j] = temp_cortes;
-					//caso contrário, não altera
-				}
-				else
-				{
-					cortes[j] = temp_cortes;
+				{	
+					cortes[j] += (int)out.numerico;
 				}
 			}
 		}
 
+
 		//pega o total de desperdício
-		float desp_solucao = problema.minimize(desp, cortes);
-		//cout << total_desperdicios;
+		double desp_solucao = problema.minimize(desp, cortes); 
+		
 		//isso contudo, deve ser executado em várias instâncias ou seja, será acumulado valores proporcionais
 		//o objetivo é minimizar os desperdícios, então a meta é a porcentagem desses desperdícios sempre serem menores
-		*fitness_desp += (desp_solucao / total_desperdicios);
-
+		*fitness_desp += (desp_solucao / (problema.estmax * problema.largura_peca));
+		
 		for (int i = 0; i<problema.demandas.size(); i++){
-			for (int j = 0; j<problema.padroes_corte.size(); j++){
-				
-				float qnt = 0;
-				float total_cortes = 0;
-				float media_demanda = 0;
-				float media_cortes = 0;
+			
+			double qnt = 0;
+			double total_cortes = 0;
+			demandas_atendidas = 0; 
+			media_cortes = 0;
+			media_demanda = 0;
 
-				qnt += cortes[j] * (problema.demandas[i].qnt * problema.demandas[i].tamanho);
+			for (int j = 0; j<problema.padroes_corte.size(); j++){
+				qnt += cortes[j] * (problema.demandas[i].tamanho);	
 				total_cortes += cortes[j];
 				//primeira condição: se a demanda está sendo atendida
 				//verificar se a quantidade produzida das peças de demanda(i) atende ou supera as demandas
-				if (qnt >= (problema.demandas[i].qnt * problema.demandas[i].tamanho)){
+			}
+			if (qnt >= (problema.demandas[i].qnt * problema.demandas[i].tamanho)){
 					demandas_atendidas += 1; 
 					media_demanda += 1; 
 				} else {
 					media_demanda -= 1; 
 				}
+
 
 				//segunda condição: se os cortes estão ultrapassando o estoque
 				if (total_cortes > problema.estmax){
@@ -227,19 +278,17 @@ void fitness(arvoregenes individuo, float *nota, float *fitness_demanda, float *
 				media_cortes = media_cortes/problema.padroes_corte.size();
 
 				*nota += (media_demanda + media_cortes)/2;
-			}
 		}
 
 		//calcular o fitness da demanda
 		*fitness_demanda += (demandas_atendidas/max_demandas);
 
-
 		
 		// //[DEBUG] printar a solução gerada
-		//  for (int i = 0; i < problema.padroes_corte.size(); i++)
-		//  {
-		//  	cout << cortes[i] << "\n";
-		//  }
+	    // for (int i = 0; i < problema.padroes_corte.size(); i++)
+		//   {
+		//   	cout << cortes[i] << "\n";
+		//   }
 
 		//garbage colector 
 		free(cortes);
@@ -248,8 +297,11 @@ void fitness(arvoregenes individuo, float *nota, float *fitness_demanda, float *
 
 	*fitness_demanda = *fitness_demanda/problemas.size();
 	*fitness_desp = *fitness_desp/problemas.size();
-    *nota = (*nota/problemas.size()) * 100;
-	cout << *nota;
+	// cout << *fitness_demanda;
+	// cout << "\n";
+	//cout << *fitness_desp << "\n";
+	// cout << "\n";
+	
 }
 
 //cria a população inicial com base em programas aleatórios
@@ -282,24 +334,31 @@ void limparPopulacao(vector<arvoregenes> &pop)
 	}
 }
 
+void printarPopulacao(vector <arvoregenes> pop){
+	for (int i = 0; i<pop.size(); i++){
+		 ordem(pop[i]);
+		 cout << "\n";
+	}
+}
+
 int main()
 {
 	//população inicial
 	vector<arvoregenes> programas = populacaoInicial(POPMAX, DEPTH_I);
-	float nota = 0;
-	float demandas = 0;
-	float desperdicio = 0;
+	double nota = 0;
+	double demandas = 0;
+	double desperdicio = 0;
+	double melhor_fo = -100000000000; 
+
+	arvoregenes melhor_individuo;
 
 	vector<Instancia> problemas = trainingSet();
-
-	fitness(programas[0], &nota, &demandas, &desperdicio, problemas);
-
-	//i.printarPadroesCorte();
-
-	// while (geracoes < GEN_MAX)
-	// {
-	// 	PG(programas);
-	// }
+	 
+	for (int i = 0; i<GEN_MAX; i++){
+		PG(programas, problemas, &melhor_fo);
+		cout << melhor_fo << "\n"; 
+	}
+	
 
 	// cout << "Problemas Resolvidos: " << problema_resolvido;
 

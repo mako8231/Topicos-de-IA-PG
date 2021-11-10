@@ -13,7 +13,6 @@ arvoregenes criaArvore(char *chave){
     //Aloca a árvore na memória 
     arv = (arvoregenes) malloc(sizeof(nodo));
     //não faça o nodo apontar para nada, por agora
-    arv->pai = NULL;
     arv->filhodireito = NULL;
     arv->filhoesquerdo = NULL;
     //arv->chave = chave; 
@@ -170,7 +169,7 @@ arvoregenes gerarPopulacao(int nivel, arvoregenes individuo){
         //criar uma probabilidade de entrar uma variável constante aleatória ou uma variável do conjunto de terminais 
         if (geraNum(0, 2) == 0){
             //constante aleatória 
-            float constante = randomFloat(0, 10);
+            double constante = randomdouble(0, 10);
             char str_cons[14]; 
             gcvt(constante, 5, str_cons);
             individuo = criaArvore(str_cons);

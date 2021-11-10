@@ -6,13 +6,13 @@
     //estrutura para processar a saída da leitura do programa
     struct saida
     {
-	    float numerico;
+	    double numerico;
 	    bool binario; 
     };
 
 #define LOGIC_LINE 2
 
-#define FUNC_LINE 5
+#define FUNC_LINE 6
 #define FUNC_COL 4
 
 #define TERM_LINE 2
@@ -27,7 +27,7 @@
         "/",
         "*",
         "SIN",
-        //">=",
+        ">=",
         //"<=",
         //"MOD",
         //"OR",
@@ -42,23 +42,23 @@
     class Funcoes{
         public:
             //terminais
-            float l; //isso pode ser a largura 
-            float d; //e essa variavel a demanda dos itens 
+            double l; //isso pode ser a largura 
+            double d; //e essa variavel a demanda dos itens 
 
             //funcoes
-            float soma(float x1, float x2);
-            float subtracao(float x1, float x2);
-            float multiplicacao(float x1, float x2);
-            float divisao(float x1, float x2);
-            float resto(float x1, float x2);
-            float sen(float x1, float x2);
-            bool menorique(float x1, float x2);
-            bool maiorique(float x1, float x2);
+            double soma(double x1, double x2);
+            double subtracao(double x1, double x2);
+            double multiplicacao(double x1, double x2);
+            double divisao(double x1, double x2);
+            double resto(double x1, double x2);
+            double sen(double x1, double x2);
+            bool menorique(double x1, double x2);
+            bool maiorique(double x1, double x2);
             bool AND(bool x1, bool x2);
             bool OR(bool x1, bool x2);
 
-            //floaterpretador 
-            saida eval(arvoregenes programa, float l, float d);
+            //doubleerpretador 
+            saida eval(arvoregenes programa, double l, double d);
             
             //construtor 
             Funcoes();
@@ -66,6 +66,6 @@
 };
 
 int geraNum(int min, int max);
-float randomFloat(float min, float max);
+double randomdouble(double min, double max);
 
 #endif

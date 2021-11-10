@@ -14,7 +14,7 @@ using namespace std;
      **/
     struct nodo
     {
-        nodo *pai;
+        double fo; 
         nodo *filhodireito;
         nodo *filhoesquerdo;  
         char *chave;  

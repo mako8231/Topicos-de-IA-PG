@@ -6,7 +6,7 @@ using namespace std;
 
 Instancia::~Instancia(){}
 //inicializando o objeto 
-Instancia::Instancia(float largura, int est){
+Instancia::Instancia(double largura, int est){
     largura_peca = largura;
     estmax = est; 
 }
@@ -18,7 +18,13 @@ void Instancia::adicionarDemanda(demanda d){
 
 void Instancia::adicionarPadraoCorte(int programacao[]){
     //adicione o padrão de corte ao vetor
-    int * p = programacao; 
+    int * p;
+    p = (int *)malloc(demandas.size() * sizeof(int));
+
+    for (int i = 0; i<demandas.size(); i++){
+        p[i] = programacao[i];
+    } 
+
     padroes_corte.push_back(p);
 }
 
@@ -47,8 +53,8 @@ void Instancia::printarPadroesCorte(){
     }
 }
 
-float Instancia::tamanhoPorPadrao(int padraoi){
-    float tam = 0; 
+double Instancia::tamanhoPorPadrao(int padraoi){
+    double tam = 0; 
 
     //percorre pela matriz de padrões
     for(int j = 0; j<demandas.size(); j++){
@@ -60,15 +66,15 @@ float Instancia::tamanhoPorPadrao(int padraoi){
 }
 
 //calcula o desperdício para cada padrão de corte 
-float * Instancia::desperdicio(float *total){
-    float * desp; 
-    desp = (float *) malloc(sizeof(float) * padroes_corte.size());
+double * Instancia::desperdicio(double *total){
+    double * desp; 
+    desp = (double *) malloc(sizeof(double) * padroes_corte.size());
 
     for (int i = 0; i<padroes_corte.size(); i++){
         desp[i] = 0;
-        float corteTotal = 0;  
+        double corteTotal = 0;  
         for(int j=0; j<demandas.size(); j++){
-            corteTotal += padroes_corte[i][j] * demandas[j].tamanho;
+            corteTotal += padroes_corte[i][j] * demandas[j].tamanho;        
         }
         //armazena os desperdícios para cada padrão de corte
         desp[i] = largura_peca - corteTotal;
@@ -79,10 +85,9 @@ float * Instancia::desperdicio(float *total){
 }
 
 //calcula o desperdício para o modelo de solução proposto
-float Instancia::minimize(float *desperdicio, int *x){
+double Instancia::minimize(double *desperdicio, int *x){
     //variavel do total
-    float total = 0; 
-
+    double total = 0; 
     //Percorre todos os elementos 
     for(int i = 0; i<padroes_corte.size(); i++){
         total += desperdicio[i] * x[i]; 
@@ -90,6 +95,17 @@ float Instancia::minimize(float *desperdicio, int *x){
 
     //retorna o desperdício total gerado
     return total; 
+}
+
+int * Instancia::inicializarCortes(){
+    //alocar o vetor de cortes na memória
+    int * cortes = (int *)malloc(padroes_corte.size() * sizeof(int));
+
+    for (int i = 0; i<padroes_corte.size(); i++){
+        cortes[i] = 0;
+    }
+
+    return cortes;
 }
 
 //cria uma lista de instâncias de problemas 
@@ -184,7 +200,6 @@ vector<Instancia> trainingSet(){
 
     //gerar padrões de cortes homogêneos
     gerarPadraoCorte(p2);
-
     problemas.push_back(p2);
 
     //retorna todos os problemas 
