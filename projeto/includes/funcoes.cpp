@@ -20,24 +20,24 @@ Funcoes::Funcoes(){
 
 //operação de soma 
 double Funcoes::soma(double x1, double x2){
-    return abs(x1 + x2);
+    return fabs(x1 + x2);
 }
 
 //operação de subtração
 double Funcoes::subtracao(double x1, double x2){
-    return abs(x1 - x2);
+    return fabs(x1 - x2);
 }
 
 //operação de multiplicação
 double Funcoes::multiplicacao(double x1, double x2){
-    return abs(x1 * x2);
+    return fabs(x1 * x2);
 }
 
 //operação de divisão
 double Funcoes::divisao(double x1, double x2){
     if (x2 == 0)
-        return abs(x1);
-    return abs(x1/x2);
+        return fabs(x1);
+    return fabs(x1/x2);
 }
 
 //operação de resto
@@ -48,7 +48,7 @@ double Funcoes::resto(double x1, double x2){
 }
 
 double Funcoes::sen(double x1, double x2){ 
-    return abs(x1 * sin(x2));
+    return fabs(x1 * sin(x2));
 }
 
 //verifica se x1 é menor que x2 
@@ -99,23 +99,29 @@ saida Funcoes::eval(arvoregenes programa, double l, double d){
     //lendo a subárvore da direita 
     saida valor_d = eval(programa->filhodireito, l, d);
 
-    if (strcmp(programa->chave, "+") == 0)
+    if (strcmp(programa->chave, "+") == 0){
         s.numerico = soma(valor_e.numerico, valor_d.numerico);
-    
-    else if (strcmp(programa->chave, "-") == 0)
+    }
+
+    else if (strcmp(programa->chave, "-") == 0){
         s.numerico = subtracao(valor_e.numerico, valor_d.numerico);
-    
-    else if (strcmp(programa->chave, "*") == 0)
+    }
+
+    else if (strcmp(programa->chave, "*") == 0){
         s.numerico = multiplicacao(valor_e.numerico, valor_d.numerico);
+    }
 
-    else if (strcmp(programa->chave, "/") == 0)
+    else if (strcmp(programa->chave, "/") == 0){
         s.numerico = divisao(valor_e.numerico, valor_d.numerico);
+    }
 
-    else if (strcmp(programa->chave, "MOD") == 0)
+    else if (strcmp(programa->chave, "MOD") == 0){
         s.numerico = resto(valor_e.numerico, valor_d.numerico);
+    }
 
-    else if (strcmp(programa->chave, "SIN") == 0)
+    else if (strcmp(programa->chave, "SIN") == 0){
         s.numerico = sen(valor_e.numerico, valor_d.numerico);
+    }
 
     else if (strcmp(programa->chave, ">=") == 0) {
         s.binario = maiorique(valor_e.numerico, valor_d.numerico);
@@ -134,11 +140,13 @@ saida Funcoes::eval(arvoregenes programa, double l, double d){
         }
     }
 
-    else if (strcmp(programa->chave, "AND") == 0)
+    else if (strcmp(programa->chave, "AND") == 0){
         s.binario = AND(valor_e.binario, valor_d.binario);
-    
-    else if (strcmp(programa->chave, "OR") == 0)
+    }
+
+    else if (strcmp(programa->chave, "OR") == 0){
         s.binario = OR(valor_e.binario, valor_d.binario);
+    }
 
     return s; 
 

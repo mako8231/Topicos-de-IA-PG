@@ -40,8 +40,7 @@ class Instancia {
         //esses são copias dos métodos do antigo "problema.h"
         double tamanhoPorPadrao(int padraoi);
         double * desperdicio(double *total);
-        int * inicializarCortes();
-        double minimize(double *desperdicio, int *x);
+        double minimize(double *desperdicio, vector<int> x);
         
         //construtor
         Instancia(double largura, int est);

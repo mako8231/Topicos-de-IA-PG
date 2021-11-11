@@ -85,11 +85,15 @@ double * Instancia::desperdicio(double *total){
 }
 
 //calcula o desperdício para o modelo de solução proposto
-double Instancia::minimize(double *desperdicio, int *x){
+double Instancia::minimize(double *desperdicio, vector<int> x){
     //variavel do total
     double total = 0; 
     //Percorre todos os elementos 
     for(int i = 0; i<padroes_corte.size(); i++){
+        // if(x[i] < 0){
+        //     cout << "cortes discrepantes" << x[i] << "\n";
+        // }
+            
         total += desperdicio[i] * x[i]; 
     }    
 
@@ -97,16 +101,6 @@ double Instancia::minimize(double *desperdicio, int *x){
     return total; 
 }
 
-int * Instancia::inicializarCortes(){
-    //alocar o vetor de cortes na memória
-    int * cortes = (int *)malloc(padroes_corte.size() * sizeof(int));
-
-    for (int i = 0; i<padroes_corte.size(); i++){
-        cortes[i] = 0;
-    }
-
-    return cortes;
-}
 
 //cria uma lista de instâncias de problemas 
 vector<Instancia> trainingSet(){
@@ -209,11 +203,11 @@ vector<Instancia> trainingSet(){
 
 //gerar um padrão de corte homogêneo 
 void gerarPadraoCorte(Instancia& i){
-    for (int item = 0; item <= i.demandas.size(); item++){
+    for (int item = 0; item < i.demandas.size(); item++){
         //alocar o padrão de corte baseado no tamanho das demandas
         int * padrao;
         padrao = (int *) malloc(i.demandas.size() * sizeof(int));
-        for (int j=0; j<=i.demandas.size(); j++){
+        for (int j=0; j<i.demandas.size(); j++){
             padrao[j] = 0;
             //inserir os valores homogêneos
             if(j == item){
