@@ -8,7 +8,7 @@
 #include <vector>
 
 #define POPMAX 1000
-#define DEPTH_I 4
+#define DEPTH_I 10
 #define GEN_MAX 100
 
 using namespace std;
@@ -19,7 +19,7 @@ int prof = DEPTH_I;
 int geracoes = 0;
 
 //funções prototipadas
-void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<Instancia> problemas);
+void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<vector<int>>& solucao,  vector<Instancia> problemas);
 void limparPopulacao(vector<arvoregenes> &pop);
 
 //Reproduz os genes da população seguinte
@@ -114,7 +114,7 @@ void crossover(arvoregenes pai, arvoregenes mae, arvoregenes *prole_1, arvoregen
 	*prole_2 = genes_mae;
 }
 
-void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * melhor_fo)
+void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * melhor_fo, arvoregenes * melhor_individuo, vector<vector<int>>& melhor_solucao)
 {
 	
 
@@ -124,7 +124,7 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 	//melhor fo
 
 	double prob_crossover = 0.4;
-	double prob_mutacao = 0.1; 
+	double prob_mutacao = 0.3; 
 
 	double val = randomdouble(0, 1); 
 
@@ -134,8 +134,10 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 		double fitness_demanda = 0; 
 		double fitness_desp = 0;
 		double nota = 0; 
+		vector<vector<int>> solucao; 
 		//avalia o indivíduo
-		fitness(individuos[i], &fitness_demanda, &fitness_desp, problemas);
+		fitness(individuos[i], &fitness_demanda, &fitness_desp, solucao, problemas);
+
 		
 		//fo é a nota final do fitness 
 		double fo = fitness_demanda - fitness_desp; 
@@ -143,10 +145,32 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 		//se é um indivíduo bom
 		if (*melhor_fo < fo){
 			*melhor_fo = fo; 
+			individuos[i]->fo = fo; 
 			//seleciona o indivíduo e copia para a nova geração
 			nova_geracao.push_back(copiaArvore(individuos[i]));
+			
+			//pega o melhor indivíduo e a melhor solução
+			if (melhor_solucao.size() > 0){
+				
+				//limpar a matriz de soluções
+				for (int i = 0; i<melhor_solucao.size(); i++){
+					melhor_solucao[i].clear();
+				}
+				melhor_solucao.clear();
+
+				melhor_solucao = solucao;
+			} else {
+				melhor_solucao = solucao;
+			}		 
+
+
+			if ((*melhor_individuo) != NULL ){
+				apagaNodo(&(*melhor_individuo));
+				*melhor_individuo = copiaArvore(individuos[i]);
+			} else {
+				*melhor_individuo = copiaArvore(individuos[i]);
+			}
 		}
-		
 	}
 
 	for (int i = 0; i<individuos.size(); i++){
@@ -182,14 +206,13 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 	//limpa a geração original
 	limparPopulacao(individuos);
 	individuos = nova_geracao;
-	
 
 }
 
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 //fitness(programa, nota, solução, desperdício)
-void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<Instancia> problemas)
+void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<vector<int>>& solucao, vector<Instancia> problemas)
 {
 
 	//testa o indivíduo para todas as instâncias
@@ -197,7 +220,7 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 		//seleciona a instancia atual
 		Instancia instancia = problemas[pr];
 		//cria o vetor de cortes 
-		vector<int> cortes; 
+		vector<int> cortes;
 		int demandas_max = instancia.demandas.size();
 
 		//demandas atendidas 
@@ -218,31 +241,26 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 				saida resultado = f.eval(individuo, peca_tam, instancia.demandas[j].tamanho);
 
 				if (resultado.binario){
+					//às vezes é gerado um inteiro negativo por conta do real positivo ser grande demais
 					int corte_gerado = (int)round(resultado.numerico);
 					if (corte_gerado < 0){
-						// cout << "Solução Em Double" << resultado.numerico << "\n";
-						// cout << "Solução gerada: " << (int)round(resultado.numerico) << "\n";
-						// cout << "Valor na variavel 'corte gerado': " << corte_gerado << "\n";
-						// cout << "Indice do padrao de corte: " << j << "\n"; 
-						// cout << "Total Cortes: " << total_cortes << "\n"; 
-						// cout << "Tamanho da peça: " << peca_tam << "\n";
-						// cout << "Tamanho da demanda: " << instancia.demandas[j].tamanho << "\n";
-						// ordem(individuo); 
-						// cout << "\n";
 						corte_gerado = 0; 
 					}
+					//considerando que é impossível uma solução ter um número de cortes alto demais, deixe normalizado para zero
 					total_cortes += corte_gerado; 
 					if (total_cortes < 0){
 						total_cortes = 0; 
 					}
 				} 
-
-				
-			}
+			}		
+			//adicionar a quantidade de cortes 
 			cortes.push_back(total_cortes);
 		}
 
-		
+		//copia a solução para o vetor 
+		vector<int> sol; 
+		copiarVetor(cortes, sol);
+		solucao.push_back(sol);
 
 		double desp_solucao = instancia.minimize(desp, cortes);
 		*fitness_desp += desp_solucao/(instancia.largura_peca * instancia.estmax); 
@@ -268,7 +286,7 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 
 	*fitness_demanda = *fitness_demanda/problemas.size();
 	*fitness_desp = *fitness_desp/problemas.size();
-	
+
 	// cout << *fitness_desp << "\n";
 	// cout << *fitness_demanda << "\n";
 	// cout << *fitness_demanda - *fitness_desp << "\n";
@@ -320,14 +338,18 @@ int main()
 	double desperdicio = 0;
 	double melhor_fo = -100000000000; 
 
-	arvoregenes melhor_individuo;
+	arvoregenes melhor_individuo = NULL;
 
 	vector<Instancia> problemas = trainingSet();
-	 
+	vector<vector<int>> melhor_solucao;  
+
 	for (int i = 0; i<GEN_MAX; i++){
-		PG(programas, problemas, &melhor_fo);
+		PG(programas, problemas, &melhor_fo, &melhor_individuo, melhor_solucao);
 		cout << "Geracao: " << i + 1 << "\n";
-		cout << melhor_fo << "\n"; 
+		cout << melhor_fo << "\n";
+		ordem(melhor_individuo);
+		//cout << melhor_solucao.size() << "\n";
+		//printarCortes(melhor_solucao); 
 	}
 	
 

@@ -24,4 +24,5 @@
     8.2 Alterar o problema.h e problema.cpp, de modo que eles coletem qualquer instância de problema, assim, viabilizando o uso da PG ✔️
 
 9 - Com o fitness funcionando, apenas é necessário coletar os melhores resultados, inserir mais instâncias de testes e assim permitindo o levantamento de dados. 
+    
 

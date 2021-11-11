@@ -101,7 +101,6 @@ double Instancia::minimize(double *desperdicio, vector<int> x){
     return total; 
 }
 
-
 //cria uma lista de instâncias de problemas 
 vector<Instancia> trainingSet(){
     //cria a lista de problemas
@@ -216,5 +215,22 @@ void gerarPadraoCorte(Instancia& i){
             }
         }
         i.padroes_corte.push_back(padrao);
+    }
+}
+
+//copia os itens de um vetor para outro 
+void copiarVetor(vector<int> vetor, vector<int>& destino){
+    for (int i = 0; i<vetor.size(); i++){
+        //copia o elemento
+        destino.push_back(vetor[i]);
+    }
+}
+
+//imprimir os cortes
+void printarCortes(vector<vector<int>> cortes){
+    for (int i = 0; i<cortes.size(); i++){
+        for (int j=0; j<cortes[i].size(); j++){
+            cout << "Problema: " << i << "Corte do padrão " << j << ": " << cortes[i][j] << "\n";
+        }
     }
 }

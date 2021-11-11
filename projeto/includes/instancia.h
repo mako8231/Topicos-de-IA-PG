@@ -1,7 +1,8 @@
 #ifndef INSTANCIA
 #define INSTANCIA 
 
-#include <vector>  
+#include <vector> 
+#include "arvore.h" 
 
 using namespace std; 
 
@@ -12,6 +13,7 @@ struct demanda
     double tamanho;
     double qnt; 
 };
+
 
 class Instancia {
     public: 
@@ -50,5 +52,7 @@ class Instancia {
 
 vector<Instancia> trainingSet();
 void gerarPadraoCorte(Instancia& i);
+void copiarVetor(vector<int> vetor, vector<int>& destino);
+void printarCortes(vector<vector<int>> cortes); 
 
 #endif
