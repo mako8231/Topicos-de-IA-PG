@@ -8,7 +8,7 @@
 #include <vector>
 
 #define POPMAX 1000
-#define DEPTH_I 10
+#define DEPTH_I 5
 #define GEN_MAX 100
 
 using namespace std;
@@ -19,7 +19,7 @@ int prof = DEPTH_I;
 int geracoes = 0;
 
 //funções prototipadas
-void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<vector<int>>& solucao,  vector<Instancia> problemas);
+void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, double *fitness_capacidade, vector<vector<int>>& solucao, vector<Instancia> problemas);
 void limparPopulacao(vector<arvoregenes> &pop);
 
 //Reproduz os genes da população seguinte
@@ -123,8 +123,8 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 
 	//melhor fo
 
-	double prob_crossover = 0.4;
-	double prob_mutacao = 0.3; 
+	double prob_crossover = 0.8;
+	double prob_mutacao = 0.1; 
 
 	double val = randomdouble(0, 1); 
 
@@ -133,14 +133,15 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 		//variaveis de fitness
 		double fitness_demanda = 0; 
 		double fitness_desp = 0;
-		double nota = 0; 
+		double fitness_cap = 0;
 		vector<vector<int>> solucao; 
 		//avalia o indivíduo
-		fitness(individuos[i], &fitness_demanda, &fitness_desp, solucao, problemas);
+		fitness(individuos[i], &fitness_demanda, &fitness_desp, &fitness_cap, solucao, problemas);
 
 		
 		//fo é a nota final do fitness 
-		double fo = fitness_demanda - fitness_desp; 
+		double fo = ((fitness_demanda * 0.5) + (fitness_cap * 0.5)) - fitness_desp; 
+		//cout << fo << "\n";
 
 		//se é um indivíduo bom
 		if (*melhor_fo < fo){
@@ -212,7 +213,7 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 //a função que vai lidar com o problema em si
 //a ideia será fazer o programa gerado pela GP definir o número de cortes em função da largura e demanda definida
 //fitness(programa, nota, solução, desperdício)
-void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, vector<vector<int>>& solucao, vector<Instancia> problemas)
+void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, double *fitness_capacidade, vector<vector<int>>& solucao, vector<Instancia> problemas)
 {
 
 	//testa o indivíduo para todas as instâncias
@@ -222,9 +223,13 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 		//cria o vetor de cortes 
 		vector<int> cortes;
 		int demandas_max = instancia.demandas.size();
+		double total_cortes = 0;
 
 		//demandas atendidas 
-		int demandas_atendidas = 0; 
+		int demandas_atendidas = 0;
+
+		//capacidades mantidas
+		int capacidades_mantidas = 0;  
 
 		//calcular os desperdicios 
 		double * desp; 
@@ -238,19 +243,17 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 				//gera a peça produzida pelo padrão de corte
 				double peca_tam = instancia.tamanhoPorPadrao(i);
 				
-				saida resultado = f.eval(individuo, peca_tam, instancia.demandas[j].tamanho);
+				saida resultado = f.eval(individuo, peca_tam, instancia.demandas[j].qnt * instancia.demandas[i].tamanho);
 
-				if (resultado.binario){
-					//às vezes é gerado um inteiro negativo por conta do real positivo ser grande demais
-					int corte_gerado = (int)round(resultado.numerico);
-					if (corte_gerado < 0){
-						corte_gerado = 0; 
-					}
+				//às vezes é gerado um inteiro negativo por conta do real positivo ser grande demais
+				int corte_gerado = (int)round(resultado.numerico);
+				if (corte_gerado < 0){
+					corte_gerado = 10000000; 
+				}
 					//considerando que é impossível uma solução ter um número de cortes alto demais, deixe normalizado para zero
-					total_cortes += corte_gerado; 
-					if (total_cortes < 0){
-						total_cortes = 0; 
-					}
+				total_cortes += corte_gerado; 
+				if (total_cortes < 0){
+					total_cortes = 10000000; 
 				} 
 			}		
 			//adicionar a quantidade de cortes 
@@ -268,7 +271,7 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 		//iterar pelas demandas 
 		for (int i = 0; i<instancia.demandas.size(); i++){
 			double qnt = 0; 
-			
+
 			//calcula a peça produzida na demanda i 
 			for (int j = 0; j<instancia.padroes_corte.size(); j++){
 				qnt += cortes[j] * instancia.demandas[i].tamanho;
@@ -279,11 +282,24 @@ void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_des
 			}
 		}
 
+		//iterar pelos cortes
+		for (int i = 0; i<instancia.padroes_corte.size(); i++){
+			//soma todos os cortes 
+			total_cortes += cortes[i];
+		}
+
+		if (total_cortes == instancia.estmax){
+			capacidades_mantidas += 1; 
+		}
+
 		//calcular o fitness da demanda 
 		*fitness_demanda += (demandas_atendidas/demandas_max);
+		//calcular o fitness dos cortes 
+		*fitness_capacidade += capacidades_mantidas; 
 
 	}
 
+	*fitness_capacidade = *fitness_capacidade/problemas.size();
 	*fitness_demanda = *fitness_demanda/problemas.size();
 	*fitness_desp = *fitness_desp/problemas.size();
 
@@ -347,9 +363,10 @@ int main()
 		PG(programas, problemas, &melhor_fo, &melhor_individuo, melhor_solucao);
 		cout << "Geracao: " << i + 1 << "\n";
 		cout << melhor_fo << "\n";
-		ordem(melhor_individuo);
-		//cout << melhor_solucao.size() << "\n";
-		//printarCortes(melhor_solucao); 
+		//ordem(melhor_individuo);
+		// cout << melhor_solucao.size() << "\n";
+		printarCortes(melhor_solucao); 
+		cout << "\n";
 	}
 	
 

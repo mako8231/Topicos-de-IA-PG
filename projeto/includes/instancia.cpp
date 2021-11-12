@@ -107,7 +107,7 @@ vector<Instancia> trainingSet(){
     vector<Instancia> problemas; 
 
     //adicionando o primeiro problema 
-    Instancia p1(10, 7);
+    Instancia p1(10, 10);
 	
     //adiciona as demandas
 	p1.adicionarDemanda({5, 5});
@@ -131,68 +131,46 @@ vector<Instancia> trainingSet(){
     problemas.push_back(p1);
 
     //adicionando o segundo problema
-    Instancia p2(10000, 57);
 
-    p2.adicionarDemanda({4964, 3});
-    p2.adicionarDemanda({4950, 1});
-    p2.adicionarDemanda({4826, 1});
-    p2.adicionarDemanda({4816, 1});
-    p2.adicionarDemanda({4808, 1});
-    p2.adicionarDemanda({4682, 1});
-    p2.adicionarDemanda({4663, 4});
-    p2.adicionarDemanda({4631, 1});
-    p2.adicionarDemanda({4451, 1});
-    p2.adicionarDemanda({4387, 2});
-    p2.adicionarDemanda({4233, 1});
-    p2.adicionarDemanda({4127, 1});
-    p2.adicionarDemanda({3992, 2});
-    p2.adicionarDemanda({3968, 1});
-    p2.adicionarDemanda({3858, 1});
-    p2.adicionarDemanda({3698, 2});
-    p2.adicionarDemanda({3672, 4});
-    p2.adicionarDemanda({3565, 1});
-    p2.adicionarDemanda({3387, 3});
-    p2.adicionarDemanda({3336, 3});
-    p2.adicionarDemanda({3309, 1});
-    p2.adicionarDemanda({3118, 3});
-    p2.adicionarDemanda({3078, 4});
-    p2.adicionarDemanda({2988, 1});
-    p2.adicionarDemanda({2870, 1});
-    p2.adicionarDemanda({2862, 2});
-    p2.adicionarDemanda({2847, 2});
-    p2.adicionarDemanda({2735, 2});
-    p2.adicionarDemanda({2716, 3}); 
-    p2.adicionarDemanda({2652, 1});
-    p2.adicionarDemanda({2631, 3});
-    p2.adicionarDemanda({2553, 2});
-    p2.adicionarDemanda({2496, 3});
-    p2.adicionarDemanda({2406, 1});
-    p2.adicionarDemanda({2125, 2});
-    p2.adicionarDemanda({2017, 1});
-    p2.adicionarDemanda({1939, 3});
-    p2.adicionarDemanda({1848, 4});
-    p2.adicionarDemanda({1832, 1});
-    p2.adicionarDemanda({1672, 2});
-    p2.adicionarDemanda({1624, 1});
-    p2.adicionarDemanda({1593, 1});
-    p2.adicionarDemanda({1436, 4});
-    p2.adicionarDemanda({1225, 2});
-    p2.adicionarDemanda({1212, 3});
-    p2.adicionarDemanda({1060, 4});
-    p2.adicionarDemanda({943, 2});
-    p2.adicionarDemanda({763, 1});
-    p2.adicionarDemanda({733, 4});
-    p2.adicionarDemanda({583, 1});
-    p2.adicionarDemanda({476, 1});
-    p2.adicionarDemanda({462, 2});
-    p2.adicionarDemanda({278, 3});
-    p2.adicionarDemanda({246, 1});
-    p2.adicionarDemanda({80, 1});
-    p2.adicionarDemanda({74, 2});
-    p2.adicionarDemanda({40, 2});
+    //problema 3 
+    Instancia p2(5600, 73);
 
-    //gerar padrões de cortes homogêneos
-    gerarPadraoCorte(p2);
+    p2.adicionarDemanda({1380, 22});
+    p2.adicionarDemanda({1520, 25});
+    p2.adicionarDemanda({1560, 12});
+    p2.adicionarDemanda({1710, 14});
+    p2.adicionarDemanda({1820, 18});
+    p2.adicionarDemanda({1880, 18});
+    p2.adicionarDemanda({1930, 20});
+    p2.adicionarDemanda({2000, 10});
+    p2.adicionarDemanda({2050, 12});
+    p2.adicionarDemanda({2100, 14});
+    p2.adicionarDemanda({2140, 16});
+    p2.adicionarDemanda({2150, 18});
+    p2.adicionarDemanda({2200, 20});
+
+    int padrao3_1[] = {0,    0,    0,     0,    3,    0,    0,    0,    0,    0,    0,    0,    0};
+    int padrao3_2[] = {1,    0,    0,     0,    0,    0,    1,    0,    0,    0,    0,    1,    0};
+    int padrao3_3[] = {1,    0,    0,     0,    0,    0,    0,    0,    1,    0,    0,    1,    0};
+    int padrao3_4[] = {1,    0,    0,     0,    0,    0,    0,    0,    0,    2,    0,    0,    0};
+    int padrao3_5[] = {0,    0,    1,     0,    1,    0,    0,    0,    0,    0,    0,    0,    1};
+    int padrao3_6[] = {0,    1,    0,     0,    0,    1,    0,    0,    0,    0,    0,    0,    1};
+    int padrao3_7[] = {0,    1,    0,     0,    0,    0,    1,    0,    0,    0,    0,    1,    0};
+    int padrao3_8[] = {0,    1,    0,     0,    0,    0,    1,    0,    0,    0,    1,    0,    0};
+    int padrao3_9[] = {0,    0,    0,     1,    0,    1,    0,    1,    0,    0,    0,    0,    0};
+    int padrao3_10[] = {0,    0,    0,     2,    0,    0,    0,    0,    0,    0,    0,    1,    0};
+
+    p2.adicionarPadraoCorte(padrao3_1);
+    p2.adicionarPadraoCorte(padrao3_2);
+    p2.adicionarPadraoCorte(padrao3_3);
+    p2.adicionarPadraoCorte(padrao3_4);
+    p2.adicionarPadraoCorte(padrao3_5);
+    p2.adicionarPadraoCorte(padrao3_6);
+    p2.adicionarPadraoCorte(padrao3_7);
+    p2.adicionarPadraoCorte(padrao3_8);
+    p2.adicionarPadraoCorte(padrao3_9);
+    p2.adicionarPadraoCorte(padrao3_10);
+
     problemas.push_back(p2);
 
     //retorna todos os problemas 
@@ -229,8 +207,10 @@ void copiarVetor(vector<int> vetor, vector<int>& destino){
 //imprimir os cortes
 void printarCortes(vector<vector<int>> cortes){
     for (int i = 0; i<cortes.size(); i++){
+        cout << "===================================" << "\n";
         for (int j=0; j<cortes[i].size(); j++){
-            cout << "Problema: " << i << "Corte do padrão " << j << ": " << cortes[i][j] << "\n";
+            cout << "Problema: " << i + 1 << " Corte do padrão " << j + 1 << ": " << cortes[i][j] << "\n";
         }
+        cout << "===================================" << "\n";
     }
 }

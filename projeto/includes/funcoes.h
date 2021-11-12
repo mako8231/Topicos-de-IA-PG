@@ -12,7 +12,7 @@
 
 #define LOGIC_LINE 2
 
-#define FUNC_LINE 5
+#define FUNC_LINE 7
 #define FUNC_COL 4
 
 #define TERM_LINE 2
