@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 
-#define POPMAX 1000
+#define POPMAX 2000
 #define DEPTH_I 5
 #define GEN_MAX 100
 
@@ -17,6 +17,11 @@ int prof = DEPTH_I;
 
 //gerações
 int geracoes = 0;
+
+//resultados finais
+vector<arvoregenes> melhores_individuos;
+vector<vector<vector<int>>> melhor_solucoes; 
+
 
 //funções prototipadas
 void fitness(arvoregenes individuo, double *fitness_demanda, double *fitness_desp, double *fitness_capacidade, vector<vector<int>>& solucao, vector<Instancia> problemas);
@@ -121,7 +126,8 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 	//novo vetor de geração
 	vector<arvoregenes> nova_geracao; 
 
-	//melhor fo
+	//"melhor" fo
+	double fo_padrao = -10000;
 
 	double prob_crossover = 0.8;
 	double prob_mutacao = 0.1; 
@@ -134,6 +140,8 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 		double fitness_demanda = 0; 
 		double fitness_desp = 0;
 		double fitness_cap = 0;
+		
+
 		vector<vector<int>> solucao; 
 		//avalia o indivíduo
 		fitness(individuos[i], &fitness_demanda, &fitness_desp, &fitness_cap, solucao, problemas);
@@ -144,12 +152,19 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 		//cout << fo << "\n";
 
 		//se é um indivíduo bom
-		if (*melhor_fo < fo){
-			*melhor_fo = fo; 
+		if (fo_padrao < fo){ 
+			fo_padrao = fo; 
 			individuos[i]->fo = fo; 
 			//seleciona o indivíduo e copia para a nova geração
-			nova_geracao.push_back(copiaArvore(individuos[i]));
-			
+			//seleciona o par de melhores indivíduos
+			if (nova_geracao.size() < 2){
+				nova_geracao.push_back(copiaArvore(individuos[i]));
+			} else {
+				//se o vetor já estiver cheio (máx 2), remova o elemento do topo
+				nova_geracao.erase(nova_geracao.begin());
+				nova_geracao.push_back(copiaArvore(individuos[i]));
+			}
+
 			//pega o melhor indivíduo e a melhor solução
 			if (melhor_solucao.size() > 0){
 				
@@ -160,8 +175,17 @@ void PG(vector<arvoregenes> &individuos, vector<Instancia> problemas, double * m
 				melhor_solucao.clear();
 
 				melhor_solucao = solucao;
+				
 			} else {
 				melhor_solucao = solucao;
+			}
+
+			//armazena no relatorio os melhores indivíduos
+			if (*melhor_fo < fo){
+				//atualiza os parâmetros
+				*melhor_fo = fo; 
+				melhor_solucoes.push_back(solucao);
+				melhores_individuos.push_back(copiaArvore(individuos[i]));
 			}		 
 
 
@@ -359,14 +383,22 @@ int main()
 	vector<Instancia> problemas = trainingSet();
 	vector<vector<int>> melhor_solucao;  
 
+
 	for (int i = 0; i<GEN_MAX; i++){
 		PG(programas, problemas, &melhor_fo, &melhor_individuo, melhor_solucao);
 		cout << "Geracao: " << i + 1 << "\n";
 		cout << melhor_fo << "\n";
+		cout << programas.size() << "\n";
 		//ordem(melhor_individuo);
 		// cout << melhor_solucao.size() << "\n";
-		printarCortes(melhor_solucao); 
+		//printarCortes(melhor_solucao); 
 		cout << "\n";
+	}
+
+	for (int i=0; i<melhor_solucoes.size(); i++){
+		ordem(melhores_individuos[i]);
+		cout << "\n";
+		printarCortes(melhor_solucoes[i]);
 	}
 	
 
