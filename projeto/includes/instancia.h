@@ -22,6 +22,9 @@ class Instancia {
         double largura_peca; 
         //estoque máximo de peças 
         double estmax; 
+        double * tamanho_por_padrao;
+        double * desperdicios; 
+        double total_desperdicio; 
         //vetor de vetores (matrizes) correspondente ao padrão de cortes 
         //ex: 
         /**   
@@ -54,5 +57,6 @@ vector<Instancia> trainingSet();
 void gerarPadraoCorte(Instancia& i);
 void copiarVetor(vector<int> vetor, vector<int>& destino);
 void printarCortes(vector<vector<int>> cortes); 
+void salvarCortes(vector<vector<int>> cortes, ofstream& arquivo);
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <string.h>
 #include "funcoes.h"
 
@@ -80,6 +81,15 @@ void ordem(arvoregenes nodo){
         ordem(nodo->filhoesquerdo);
         printf("%s ", nodo->chave);
         ordem(nodo->filhodireito);
+    }
+}
+
+void ordem_arquivo(arvoregenes nodo, ofstream& arquivo){
+    //ordem de exibição: (E, R, D)
+    if (nodo != NULL){
+        ordem_arquivo(nodo->filhoesquerdo, arquivo);
+        arquivo << " " << (nodo->chave);
+        ordem_arquivo(nodo->filhodireito, arquivo);
     }
 }
 

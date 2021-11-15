@@ -32,7 +32,7 @@ using namespace std;
     void posordem(arvoregenes nodo);
     void ordem(arvoregenes nodo);
     void substituirFolha(arvoregenes *nodo, arvoregenes novo_nodo);
-    
+    void ordem_arquivo(arvoregenes nodo, ofstream& arquivo);
 
     //geração da população 
     arvoregenes gerarPopulacao(int nivel, arvoregenes individuo);
